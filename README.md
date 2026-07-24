@@ -1,1 +1,0 @@
-# rikushidou.github.io
