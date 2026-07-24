@@ -1,1 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>蛊真人 · 无极魔尊</title>
+    <!-- 字体 & 图标库 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --gold: #d4a843;
+            --gold-light: #f0d080;
+            --gold-dark: #a07830;
+            --blood: #7a1f1f;
+            --dark: #0a0808;
+            --dark-card: #141010;
+            --dark-panel: rgba(20, 16, 16, 0.88);
+            --text-light: #e6dcc8;
+            --text-muted: #9a8e7a;
+            --shadow-gold: 0 0 30px rgba(212, 168, 67, 0.15);
+            --border-gold: 1px solid rgba(212, 168, 67, 0.30);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: var(--dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(120, 40, 40, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(212, 168, 67, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(60, 20, 20, 0.20) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-dark);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        /* ===== 粒子背景 ===== */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== 主容器 ===== */
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px 60px;
+        }
+
+        /* ===== 顶部装饰线 ===== */
+        .top-ornament {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+        .top-ornament .line {
+            height: 1px;
+            width: 60px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .top-ornament .diamond {
+            color: var(--gold);
+            font-size: 12px;
+        }
+
+        /* ===== 头部 / 标题 ===== */
+        .hero {
+            text-align: center;
+            padding: 30px 0 20px;
+            position: relative;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            border: var(--border-gold);
+            padding: 4px 22px;
+            font-size: 12px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--gold);
+            border-radius: 30px;
+            margin-bottom: 18px;
+            background: rgba(212, 168, 67, 0.06);
+            backdrop-filter: blur(2px);
+            font-weight: 400;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 5.6rem);
+            font-weight: 900;
+            letter-spacing: 12px;
+            background: linear-gradient(180deg, #f7eed8 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(212, 168, 67, 0.15);
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .hero .sub {
+            font-size: clamp(0.95rem, 2vw, 1.4rem);
+            color: var(--text-muted);
+            letter-spacing: 8px;
+            border-top: var(--border-gold);
+            border-bottom: var(--border-gold);
+            display: inline-block;
+            padding: 6px 30px;
+            margin-top: 6px;
+            background: rgba(0, 0, 0, 0.30);
+            backdrop-filter: blur(4px);
+            font-weight: 400;
+        }
+        .hero .sub i {
+            color: var(--gold);
+            margin: 0 8px;
+            font-size: 0.8em;
+        }
+
+        /* ===== 太极装饰 ===== */
+        .taiji-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 10px;
+        }
+        .taiji {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #1a1410 0%, #0d0a08 100%);
+            border: 2px solid var(--gold-dark);
+            position: relative;
+            box-shadow: var(--shadow-gold), inset 0 0 30px rgba(212, 168, 67, 0.08);
+            animation: taiji-rotate 20s linear infinite;
+        }
+        .taiji::before,
+        .taiji::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+        }
+        .taiji::before {
+            width: 50%;
+            height: 50%;
+            top: 0;
+            left: 25%;
+            background: radial-gradient(circle at 50% 50%, var(--gold-light), var(--gold-dark));
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.20);
+        }
+        .taiji::after {
+            width: 50%;
+            height: 50%;
+            bottom: 0;
+            left: 25%;
+            background: radial-gradient(circle at 50% 50%, #2a1e1a, #0d0808);
+        }
+        .taiji .dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--gold);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.50);
+            z-index: 2;
+        }
+        .taiji .dot::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #0d0808;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes taiji-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== 导航卡片区 ===== */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin: 40px 0 50px;
+        }
+
+        .nav-card {
+            background: var(--dark-panel);
+            backdrop-filter: blur(8px);
+            border: var(--border-gold);
+            border-radius: 12px;
+            padding: 22px 16px 18px;
+            text-align: center;
+            transition: all 0.35s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-light);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
+        }
+        .nav-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(212, 168, 67, 0.04), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+        .nav-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(212, 168, 67, 0.12), var(--shadow-gold);
+        }
+        .nav-card:hover::after {
+            opacity: 1;
+        }
+
+        .nav-card .icon {
+            font-size: 2.2rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .nav-card:hover .icon {
+            transform: scale(1.10);
+        }
+        .nav-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 4px;
+        }
+        .nav-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 主要内容区 ===== */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0 40px;
+        }
+
+        @media (max-width: 820px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        .panel {
+            background: var(--dark-panel);
+            backdrop-filter: blur(8px);
+            border: var(--border-gold);
+            border-radius: 16px;
+            padding: 28px 30px 32px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.50);
+            transition: border-color 0.3s;
+        }
+        .panel:hover {
+            border-color: rgba(212, 168, 67, 0.50);
+        }
+
+        .panel .title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            border-bottom: var(--border-gold);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            color: var(--gold-light);
+        }
+        .panel .title i {
+            color: var(--gold);
+            font-size: 1.2rem;
+            width: 32px;
+            text-align: center;
+        }
+
+        .panel p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.9;
+            letter-spacing: 0.5px;
+        }
+        .panel p strong {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .panel .quote {
+            border-left: 3px solid var(--gold);
+            padding-left: 20px;
+            font-style: italic;
+            color: var(--text-light);
+            background: rgba(212, 168, 67, 0.04);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 20px;
+            margin: 16px 0 4px;
+            font-size: 0.95rem;
+        }
+        .panel .quote i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+
+        /* ===== 列表 ===== */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0;
+        }
+        .feature-list li {
+            padding: 8px 0 8px 32px;
+            position: relative;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(212, 168, 67, 0.06);
+            font-size: 0.92rem;
+            transition: color 0.2s;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li:hover {
+            color: var(--text-light);
+        }
+        .feature-list li::before {
+            content: '◆';
+            position: absolute;
+            left: 4px;
+            top: 8px;
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+
+        /* ===== 社交 / 链接 ===== */
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border: var(--border-gold);
+            border-radius: 40px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.30);
+            backdrop-filter: blur(4px);
+        }
+        .social-links a i {
+            color: var(--gold);
+            font-size: 1rem;
+            transition: transform 0.3s;
+        }
+        .social-links a:hover {
+            border-color: var(--gold);
+            color: var(--text-light);
+            background: rgba(212, 168, 67, 0.08);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+        .social-links a:hover i {
+            transform: scale(1.15);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            padding-top: 30px;
+            border-top: var(--border-gold);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+        .footer .sig {
+            color: var(--gold-dark);
+            font-size: 0.9rem;
+        }
+        .footer .sig i {
+            color: var(--gold);
+            margin: 0 4px;
+        }
+
+        /* ===== 响应式微调 ===== */
+        @media (max-width: 480px) {
+            .app {
+                padding: 12px 12px 40px;
+            }
+            .hero h1 {
+                letter-spacing: 6px;
+            }
+            .hero .sub {
+                letter-spacing: 4px;
+                font-size: 0.8rem;
+                padding: 4px 16px;
+            }
+            .panel {
+                padding: 20px 16px 24px;
+            }
+            .nav-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .nav-card {
+                padding: 16px 10px;
+            }
+            .nav-card .icon {
+                font-size: 1.6rem;
+            }
+            .taiji {
+                width: 56px;
+                height: 56px;
+            }
+            .social-links a {
+                padding: 6px 14px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ===== 小工具 ===== */
+        .glow-text {
+            color: var(--gold-light);
+            text-shadow: 0 0 20px rgba(212, 168, 67, 0.15);
+        }
+
+        /* ===== 加载动画 ===== */
+        .fade-in {
+            animation: fadeUp 0.9s ease forwards;
+            opacity: 0;
+        }
+        .fade-in:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+        .fade-in:nth-child(3) {
+            animation-delay: 0.30s;
+        }
+        .fade-in:nth-child(4) {
+            animation-delay: 0.45s;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 粒子画布 ===== -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- ===== 应用主体 ===== -->
+    <div class="app">
+
+        <!-- 顶部装饰 -->
+        <div class="top-ornament fade-in">
+            <span class="line"></span>
+            <span class="diamond"><i class="fas fa-circle"></i></span>
+            <span class="line"></span>
+        </div>
+
+        <!-- ===== 头部 ===== -->
+        <header class="hero fade-in">
+            <div class="badge"><i class="fas fa-skull"></i> 魔 · 道 · 至 · 尊</div>
+            <h1>无极魔尊</h1>
+            <div class="sub">
+                <i class="fas fa-feather-alt"></i>
+                蛊真人 · 不朽传说
+                <i class="fas fa-feather-alt"></i>
+            </div>
+            <div class="taiji-wrapper">
+                <div class="taiji"><div class="dot"></div></div>
+            </div>
+        </header>
+
+        <!-- ===== 导航卡片 ===== -->
+        <nav class="nav-grid fade-in">
+            <a href="#" class="nav-card">
+                <span class="icon"><i class="fas fa-scroll"></i></span>
+                <h3>道藏</h3>
+                <p>无极真经 · 蛊术秘录</p>
+            </a>
+            <a href="#" class="nav-card">
+                <span class="icon"><i class="fas fa-dragon"></i></span>
+                <h3>魔尊</h3>
+                <p>九转成魔 · 踏天而行</p>
+            </a>
+            <a href="#" class="nav-card">
+                <span class="icon"><i class="fas fa-circle-notch"></i></span>
+                <h3>蛊界</h3>
+                <p>十方天地 · 万物为蛊</p>
+            </a>
+            <a href="#" class="nav-card">
+                <span class="icon"><i class="fas fa-star"></i></span>
+                <h3>无极</h3>
+                <p>太上忘情 · 道法自然</p>
+            </a>
+        </nav>
+
+        <!-- ===== 主要内容 ===== -->
+        <div class="main-content">
+
+            <!-- 左栏：介绍 -->
+            <section class="panel fade-in">
+                <div class="title">
+                    <i class="fas fa-feather-alt"></i>
+                    无极之道
+                </div>
+                <p>
+                    <strong>「蛊真人 · 无极魔尊」</strong>，乃魔道之巅，万蛊之祖。
+                    以<strong>无极</strong>为名，象征<strong>道之极境</strong>，超越阴阳，凌驾生死。
+                </p>
+                <p>
+                    无极魔尊，掌<strong>命运蛊</strong>，执<strong>春秋蝉</strong>，
+                    于时间长河中逆流而上，于因果棋盘外落子无悔。
+                </p>
+                <div class="quote">
+                    <i class="fas fa-quote-left"></i>
+                    天地不仁，以万物为蛊；魔尊不仁，以天地为炉。
+                </div>
+                <p style="margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
+                    —— 无极之道，即是不拘于形，不滞于物，以蛊入道，以魔证真。
+                </p>
+            </section>
+
+            <!-- 右栏：特质 -->
+            <section class="panel fade-in">
+                <div class="title">
+                    <i class="fas fa-fire"></i>
+                    魔尊 · 九转
+                </div>
+                <ul class="feature-list">
+                    <li><strong>无极蛊</strong> — 演化万法，吞噬因果</li>
+                    <li><strong>春秋蝉</strong> — 逆转时空，回溯本源</li>
+                    <li><strong>命运蛊</strong> — 执掌命线，篡改天机</li>
+                    <li><strong>九转魔体</strong> — 不灭不朽，万劫不伤</li>
+                    <li><strong>道果圆满</strong> — 超脱三界，不在五行</li>
+                </ul>
+                <div style="margin-top: 18px; border-top: var(--border-gold); padding-top: 16px;">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                        <i class="fas fa-ghost" style="color: var(--gold); margin-right: 6px;"></i>
+                        「一念成魔，一念成尊。无极之外，更有无极。」
+                    </p>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ===== 底部社交链接 ===== -->
+        <div class="fade-in" style="margin: 10px 0 10px;">
+            <div class="social-links" style="justify-content: center;">
+                <a href="#" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i> 魔尊道场</a>
+                <a href="#" target="_blank"><i class="fas fa-book-open"></i> 蛊真人</a>
+                <a href="#" target="_blank"><i class="fas fa-palette"></i> 无极之境</a>
+            </div>
+        </div>
+
+        <!-- ===== 页脚 ===== -->
+        <footer class="footer fade-in">
+            <div class="sig">
+                <i class="fas fa-skull"></i>
+                无极魔尊 · 蛊真人
+                <i class="fas fa-skull"></i>
+            </div>
+            <div style="margin-top: 6px; font-size: 0.7rem; letter-spacing: 3px;">
+                © 2026 · 道法自然 · 万蛊归宗
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JavaScript: 粒子系统 + 交互 ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ---------- 粒子背景 ----------
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 80;
+            const CONNECTION_DIST = 140;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.size = Math.random() * 2.0 + 0.6;
+                    this.speedX = (Math.random() - 0.5) * 0.35;
+                    this.speedY = (Math.random() - 0.5) * 0.35;
+                    this.opacity = Math.random() * 0.5 + 0.15;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > height) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(212, 168, 67, ${this.opacity})`;
+                    ctx.fill();
+                    // 微光晕
+                    if (this.size > 1.2) {
+                        ctx.shadowColor = 'rgba(212, 168, 67, 0.12)';
+                        ctx.shadowBlur = 10;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            initParticles();
+
+            function drawLines() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < CONNECTION_DIST) {
+                            const alpha = (1 - dist / CONNECTION_DIST) * 0.20;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(212, 168, 67, ${alpha})`;
+                            ctx.lineWidth = 0.6;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                drawLines();
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            // ---------- 窗口变化重置粒子位置 ----------
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resize();
+                    particles.forEach(p => {
+                        p.x = Math.random() * width;
+                        p.y = Math.random() * height;
+                    });
+                }, 300);
+            });
+
+            // ---------- 卡片点击交互（演示） ----------
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const label = this.querySelector('h3')?.textContent || '未知';
+                    // 简单反馈
+                    const orig = this.style.borderColor;
+                    this.style.borderColor = 'var(--gold)';
+                    this.style.boxShadow = '0 0 40px rgba(212,168,67,0.25)';
+                    setTimeout(() => {
+                        this.style.borderColor = orig || '';
+                        this.style.boxShadow = '';
+                    }, 600);
+
+                    // 在控制台输出
+                    console.log(`[无极魔尊] 开启「${label}」道藏 ...`);
+                });
+            });
+
+            // ---------- 社交链接点击 ----------
+            document.querySelectorAll('.social-links a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const txt = this.textContent.trim();
+                    console.log(`[无极魔尊] 前往「${txt}」 ...`);
+                    // 可替换为真实链接
+                });
+            });
+
+            console.log('🐉 无极魔尊 · 蛊真人 ｜ 道法自然，万蛊归宗');
+        })();
+    </script>
+
+</body>
+</html>
