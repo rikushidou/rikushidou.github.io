@@ -13,9 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-</script>
-        
         body {
             font-family: 'Noto Sans SC', sans-serif;
             min-height: 100vh;
@@ -203,6 +200,38 @@
             .social-links a { padding: 6px 14px; font-size: 0.75rem; }
             .tag { font-size: 0.7rem; padding: 4px 12px; }
         }
+        
+        /* 鼠标点击樱花特效 */
+.click-sakura {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    user-select: none;
+    transform: translate(-50%, -50%);
+    animation: clickSakura 900ms ease-out forwards;
+}
+
+@keyframes clickSakura {
+    0% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            translate(0, 0)
+            scale(0.6)
+            rotate(0deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            translate(var(--move-x), var(--move-y))
+            scale(1.25)
+            rotate(var(--rotate));
+    }
+}
     </style>
 </head>
 <body>
@@ -375,6 +404,56 @@ const ap = new APlayer({
     ]
 });
 </script>
-    
+
+<script>
+document.addEventListener('click', function (event) {
+    // 点击播放器按钮时不生成樱花，避免影响操作
+    if (event.target.closest('.aplayer')) {
+        return;
+    }
+
+    const petalCount = 10;
+
+    for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('span');
+
+        petal.className = 'click-sakura';
+        petal.textContent = '🌸';
+
+        petal.style.left = event.clientX + 'px';
+        petal.style.top = event.clientY + 'px';
+
+        const angle =
+            (Math.PI * 2 * i) / petalCount +
+            (Math.random() - 0.5) * 0.6;
+
+        const distance = 35 + Math.random() * 55;
+
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+
+        petal.style.setProperty('--move-x', moveX + 'px');
+        petal.style.setProperty('--move-y', moveY + 'px');
+        petal.style.setProperty(
+            '--rotate',
+            (Math.random() * 360 - 180) + 'deg'
+        );
+
+        petal.style.fontSize = (12 + Math.random() * 12) + 'px';
+        petal.style.animationDuration =
+            (650 + Math.random() * 400) + 'ms';
+
+        document.body.appendChild(petal);
+
+        petal.addEventListener(
+            'animationend',
+            function () {
+                petal.remove();
+            },
+            { once: true }
+        );
+    }
+});
+</script>
 </body>
 </html>
