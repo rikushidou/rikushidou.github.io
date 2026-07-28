@@ -3,19 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>✨ 二次元 · 我的主页</title>
-    <!-- 字体 & 图标库 -->
+    <title>✨ 二次元 · 初音未来</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== 全局重置 ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Noto Sans SC', sans-serif;
@@ -28,7 +22,6 @@
             position: relative;
         }
 
-        /* ===== 背景图片（替换为您的初音未来图片） ===== */
         .bg-image {
             position: fixed;
             top: 0;
@@ -36,14 +29,12 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            /* ↓↓↓ 将下面的 URL 替换为您自己的图片链接或本地路径 ↓↓↓ */
-            background-image: url('images/miku.PNG');
+            /* 替换为您的初音图片 */
+            background-image: url('images/miku_bg.jpg');
             background-size: cover;
             background-position: center;
             filter: brightness(0.6) saturate(1.1);
-            transition: filter 0.3s;
         }
-        /* 如果图片加载失败，显示纯色后备 */
         .bg-image::after {
             content: '';
             position: absolute;
@@ -54,7 +45,6 @@
             background: radial-gradient(ellipse at center, rgba(20, 10, 30, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
         }
 
-        /* ===== 主内容容器 ===== */
         .main-content {
             position: relative;
             z-index: 2;
@@ -66,7 +56,6 @@
             animation: fadeInUp 1.2s ease-out;
         }
 
-        /* 用户名（核心） */
         .username {
             font-size: clamp(3rem, 12vw, 6rem);
             font-weight: 900;
@@ -81,7 +70,6 @@
             margin-bottom: 8px;
             line-height: 1.2;
         }
-
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -102,19 +90,40 @@
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .subtitle i {
-            margin: 0 6px;
-            color: #ffb7c5;
+        .subtitle i { margin: 0 6px; color: #ffb7c5; }
+
+        /* 时钟样式（您复制的部分） */
+        .clock-container {
+            margin: 16px auto 10px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(6px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: auto;
+            max-width: 90%;
+        }
+        .clock {
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fbc2eb, #a18cd1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-variant-numeric: tabular-nums;
+        }
+        .clock-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            margin-top: 2px;
         }
 
-        /* 装饰标签 */
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin: 18px 0 30px;
-        }
+        /* 以下为其他原有样式，保持完整 */
+        .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 18px 0 30px; }
         .tag {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(6px);
@@ -132,64 +141,42 @@
             transform: translateY(-2px);
             box-shadow: 0 0 20px rgba(255, 150, 200, 0.15);
         }
-        .tag i {
-            margin-right: 6px;
-            color: #ffb7c5;
-        }
+        .tag i { margin-right: 6px; color: #ffb7c5; }
 
-        /* 社交链接 */
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
+        .social-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
         .social-links a {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
-            border-radius: 60px;
-            background: rgba(0, 0, 0, 0.30);
-            backdrop-filter: blur(8px);
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 24px; border-radius: 60px;
+            background: rgba(0, 0, 0, 0.30); backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #f0e6ff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            letter-spacing: 1px;
+            color: #f0e6ff; text-decoration: none; font-size: 0.9rem;
+            transition: all 0.3s; letter-spacing: 1px;
         }
-        .social-links a i {
-            font-size: 1.2rem;
-            color: #ffb7c5;
-            transition: transform 0.3s;
-        }
+        .social-links a i { font-size: 1.2rem; color: #ffb7c5; transition: transform 0.3s; }
         .social-links a:hover {
             background: rgba(255, 200, 220, 0.15);
             border-color: #ffb7c5;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 8px 30px rgba(255, 100, 150, 0.15);
         }
-        .social-links a:hover i {
-            transform: scale(1.2) rotate(5deg);
-        }
+        .social-links a:hover i { transform: scale(1.2) rotate(5deg); }
 
-        /* 底部版权 */
-        .footer {
-            margin-top: 40px;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.30);
-            letter-spacing: 3px;
-            backdrop-filter: blur(4px);
-            padding: 8px 0;
-        }
-        .footer i {
-            color: #ffb7c5;
-            margin: 0 4px;
-        }
+        .footer { margin-top: 40px; font-size: 0.7rem; color: rgba(255, 255, 255, 0.30); letter-spacing: 3px; backdrop-filter: blur(4px); padding: 8px 0; }
+        .footer i { color: #ffb7c5; margin: 0 4px; }
 
-        /* ===== 樱花飘落（Canvas） ===== */
+        .bio {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(6px);
+            padding: 18px 24px;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .bio p { color: #f0e6ff; font-size: 1.1rem; line-height: 1.8; text-align: center; letter-spacing: 2px; }
+        .bio .sub-text { font-size: 0.9rem; color: #ffb7c5; letter-spacing: 3px; }
+
+        /* 樱花 Canvas */
         #sakura-canvas {
             position: fixed;
             top: 0;
@@ -200,68 +187,58 @@
             z-index: 1;
         }
 
-        /* ===== 动画 ===== */
         @keyframes fadeInUp {
             0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== 响应式微调 ===== */
         @media (max-width: 480px) {
-            .username {
-                letter-spacing: 3px;
-            }
-            .subtitle {
-                letter-spacing: 4px;
-                font-size: 0.9rem;
-                padding: 4px 16px;
-            }
-            .social-links a {
-                padding: 6px 14px;
-                font-size: 0.75rem;
-            }
-            .tag {
-                font-size: 0.7rem;
-                padding: 4px 12px;
-            }
+            .username { letter-spacing: 3px; }
+            .subtitle { letter-spacing: 4px; font-size: 0.9rem; padding: 4px 16px; }
+            .social-links a { padding: 6px 14px; font-size: 0.75rem; }
+            .tag { font-size: 0.7rem; padding: 4px 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== 背景图片层 ===== -->
     <div class="bg-image"></div>
-
-    <!-- ===== 樱花飘落 Canvas ===== -->
     <canvas id="sakura-canvas"></canvas>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main-content">
+        <!-- 您的用户名 -->
+        <div class="username">Rikushidou</div>
 
-        <!-- ★★★ 在这里修改您的用户名 ★★★ -->
-        <div class="username">rikushidou</div>
-
-        <!-- 动态时钟 -->
-<div class="clock-container">
-    <div class="clock" id="live-clock">--:--:--</div>
-    <div class="clock-label">🎵 此刻 · 二次元时间 🎵</div>
-</div>
-
+        <!-- 副标题（方案一） -->
         <div class="subtitle">
-            <i class="fas fa-heart"></i>
-            初音未来·跨越次元的歌姬
-            <i class="fas fa-heart"></i>
+            <i class="fas fa-music"></i>
+            初音未来 · 跨越次元的歌姬
+            <i class="fas fa-music"></i>
         </div>
 
-        <div class="bio" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(6px); padding: 18px 24px; border-radius: 20px; margin: 20px auto; max-width: 500px; border: 1px solid rgba(255,255,255,0.08);">
-    <p style="color: #f0e6ff; font-size: 1.1rem; line-height: 1.8; text-align: center; letter-spacing: 2px;">
-        🎵 与世界的第一声共鸣 🎵<br>
-        <span style="font-size: 0.9rem; color: #ffb7c5; letter-spacing: 3px;">
-            The First Sound from the Future
-    </span>
-    </p>
-</div>
-         
+        <!-- 时钟 -->
+        <div class="clock-container">
+            <div class="clock" id="live-clock">--:--:--</div>
+            <div class="clock-label">🎵 此刻 · 二次元时间 🎵</div>
+        </div>
+
+        <!-- BIO 卡片（方案一完整标语） -->
+        <div class="bio">
+            <p>
+                🎵 与世界的第一声共鸣 🎵<br>
+                <span class="sub-text">The First Sound from the Future</span>
+            </p>
+        </div>
+
+        <!-- Tags -->
+        <div class="tags">
+            <span class="tag"><i class="fas fa-palette"></i> 绘画</span>
+            <span class="tag"><i class="fas fa-music"></i> VOCALOID</span>
+            <span class="tag"><i class="fas fa-gamepad"></i> 游戏</span>
+            <span class="tag"><i class="fas fa-cat"></i> 猫系</span>
+        </div>
+
+        <!-- 社交链接 -->
         <div class="social-links">
             <a href="#" target="_blank"><i class="fab fa-github"></i> GitHub</a>
             <a href="#" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
@@ -272,15 +249,11 @@
         <div class="footer">
             <i class="fas fa-star"></i> 热爱即正义 · 二次元永存 <i class="fas fa-star"></i>
         </div>
-
     </div>
 
-    <!-- ============================================================ -->
     <script>
         (function() {
-            'use strict';
-
-            // ===== 樱花飘落粒子系统 =====
+            // === 樱花粒子 ===
             const canvas = document.getElementById('sakura-canvas');
             const ctx = canvas.getContext('2d');
             let width, height;
@@ -294,11 +267,8 @@
             window.addEventListener('resize', resize);
             resize();
 
-            // 随机生成花瓣
             class Petal {
-                constructor() {
-                    this.reset();
-                }
+                constructor() { this.reset(); }
                 reset() {
                     this.x = Math.random() * width;
                     this.y = Math.random() * height - height * 0.2;
@@ -308,16 +278,13 @@
                     this.rotation = Math.random() * 360;
                     this.rotSpeed = (Math.random() - 0.5) * 3;
                     this.opacity = Math.random() * 0.5 + 0.4;
-                    this.shape = Math.random() > 0.5 ? 0 : 1; // 两种花瓣形状
+                    this.shape = Math.random() > 0.5 ? 0 : 1;
                 }
                 update() {
                     this.x += this.speedX + Math.sin(this.y * 0.01) * 0.3;
                     this.y += this.speedY;
                     this.rotation += this.rotSpeed;
-                    if (this.y > height + 20) {
-                        this.reset();
-                        this.y = -20;
-                    }
+                    if (this.y > height + 20) { this.reset(); this.y = -20; }
                     if (this.x < -20) this.x = width + 20;
                     if (this.x > width + 20) this.x = -20;
                 }
@@ -328,11 +295,9 @@
                     ctx.globalAlpha = this.opacity;
                     ctx.shadowColor = 'rgba(255, 182, 193, 0.2)';
                     ctx.shadowBlur = 10;
-
                     const s = this.size;
                     ctx.beginPath();
                     if (this.shape === 0) {
-                        // 樱花形状（五瓣简化）
                         for (let i = 0; i < 5; i++) {
                             const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
                             const r = i === 0 ? s : s * 0.6;
@@ -344,7 +309,6 @@
                         ctx.closePath();
                         ctx.fillStyle = '#ffb7c5';
                     } else {
-                        // 椭圆花瓣
                         ctx.ellipse(0, 0, s * 0.5, s * 0.3, 0, 0, Math.PI * 2);
                         ctx.fillStyle = '#ff9eb5';
                     }
@@ -357,7 +321,7 @@
                 petals = [];
                 for (let i = 0; i < PETAL_COUNT; i++) {
                     const p = new Petal();
-                    p.y = Math.random() * height; // 初始分散
+                    p.y = Math.random() * height;
                     petals.push(p);
                 }
             }
@@ -365,55 +329,34 @@
 
             function animatePetals() {
                 ctx.clearRect(0, 0, width, height);
-                petals.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
+                petals.forEach(p => { p.update(); p.draw(); });
                 requestAnimationFrame(animatePetals);
             }
             animatePetals();
 
-            // 窗口尺寸变化重置花瓣位置
             let resizeTimeout;
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
                     resize();
-                    petals.forEach(p => {
-                        p.x = Math.random() * width;
-                        p.y = Math.random() * height;
-                    });
+                    petals.forEach(p => { p.x = Math.random() * width; p.y = Math.random() * height; });
                 }, 300);
             });
 
-            // ===== 控制台欢迎 =====
-            console.log('🌸 二次元主页已加载！欢迎来到我的世界～');
+            // === 实时时钟 ===
+            function updateClock() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('live-clock').textContent = `${h}:${m}:${s}`;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            console.log('🌸 二次元主页已加载！');
         })();
     </script>
 
-// ===== 实时时钟 =====
-function updateClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    document.getElementById('live-clock').textContent = `${h}:${m}:${s}`;
-}
-updateClock();
-setInterval(updateClock, 1000);
-    
-    <!-- 说明：替换背景图片和用户名 -->
-    <!--
-    1. 替换背景图片：
-       在 .bg-image 的 background-image 中替换 URL 或改为本地路径，如：
-       url('images/miku.jpg')
-       您可以下载初音未来壁纸放到仓库的 images 文件夹中。
-
-    2. 修改用户名：
-       找到 <div class="username">Rikushidou</div> 改为您的名字。
-
-    3. 修改社交链接：
-       将 href="#" 替换为您的真实链接。
-    -->
 </body>
 </html>
