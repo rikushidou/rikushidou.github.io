@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -350,5 +353,26 @@
         })();
     </script>
 
+<div id="aplayer"></div>
+
+<script>
+const ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    fixed: true,
+    autoplay: false,
+    loop: 'all',
+    volume: 0.5,
+
+    audio: [
+        {
+            name: '初音未来 - 千本樱',
+            artist: 'Hatsune Miku',
+            url: 'music/song.mp3',
+            cover: 'img/miku.jpg'
+        }
+    ]
+});
+</script>
+    
 </body>
 </html>
