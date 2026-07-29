@@ -1240,7 +1240,7 @@ document.addEventListener('click', function (event) {
     /* 点击播放器和主题按钮时不生成樱花 */
     if (
         event.target.closest(
-            '.aplayer, .theme-toggle'
+            '.aplayer, .theme-toggle, .background-toggle'
         )
     ) {
         return;
@@ -1401,5 +1401,205 @@ document.addEventListener('click', function (event) {
 })();
 </script>
 
+<!-- 背景切换功能 -->
+<script>
+(function () {
+    const backgroundElement =
+        document.querySelector('.bg-image');
+
+    const backgroundButton =
+        document.getElementById(
+            'background-toggle'
+        );
+
+    if (
+        !backgroundElement ||
+        !backgroundButton
+    ) {
+        console.error(
+            '找不到背景元素或背景按钮。'
+        );
+
+        return;
+    }
+
+
+    /*
+     * 在这里设置背景图片。
+     *
+     * file：图片路径
+     * name：图片名称
+     * size：显示方式
+     * position：图片位置
+     */
+    const backgrounds = [
+        {
+            file: 'images/miku.PNG',
+            name: '初音未来',
+            size: 'auto 100vh',
+            position: 'center top'
+        },
+        {
+            file: 'images/miku-2.jpg',
+            name: '樱花初音',
+            size: 'auto 100vh',
+            position: 'center top'
+        },
+        {
+            file: 'images/miku-3.jpg',
+            name: '雪未来',
+            size: 'cover',
+            position: 'center center'
+        }
+    ];
+
+
+    /*
+     * 预加载图片，降低切换时的空白时间。
+     */
+    backgrounds.forEach(function (item) {
+        const image = new Image();
+        image.src = item.file;
+    });
+
+
+    /*
+     * 读取上一次使用的背景。
+     */
+    let currentIndex = 0;
+
+    try {
+        const savedIndex =
+            Number.parseInt(
+                localStorage.getItem(
+                    'miku-background-index'
+                ),
+                10
+            );
+
+        if (
+            Number.isInteger(savedIndex) &&
+            savedIndex >= 0 &&
+            savedIndex < backgrounds.length
+        ) {
+            currentIndex = savedIndex;
+        }
+    } catch (error) {
+        console.warn(
+            '无法读取背景设置：',
+            error
+        );
+    }
+
+
+    /*
+     * 应用背景。
+     */
+    function applyBackground(
+        index,
+        shouldSave
+    ) {
+        const selected =
+            backgrounds[index];
+
+        backgroundElement.style.backgroundImage =
+            'url("' + selected.file + '")';
+
+        backgroundElement.style.backgroundSize =
+            selected.size;
+
+        backgroundElement.style.backgroundPosition =
+            selected.position;
+
+        const label =
+            '切换背景，当前背景：' +
+            selected.name;
+
+        backgroundButton.setAttribute(
+            'aria-label',
+            label
+        );
+
+        backgroundButton.setAttribute(
+            'title',
+            label
+        );
+
+        if (shouldSave) {
+            try {
+                localStorage.setItem(
+                    'miku-background-index',
+                    String(index)
+                );
+            } catch (error) {
+                console.warn(
+                    '无法保存背景设置：',
+                    error
+                );
+            }
+        }
+    }
+
+
+    /*
+     * 刚进入网页时加载保存的背景。
+     */
+    applyBackground(
+        currentIndex,
+        false
+    );
+
+
+    /*
+     * 点击后切换到下一张。
+     */
+    backgroundButton.addEventListener(
+        'click',
+        function () {
+            if (backgroundButton.disabled) {
+                return;
+            }
+
+            backgroundButton.disabled = true;
+
+            currentIndex =
+                (currentIndex + 1) %
+                backgrounds.length;
+
+            backgroundElement.classList.add(
+                'bg-changing'
+            );
+
+            window.setTimeout(
+                function () {
+                    applyBackground(
+                        currentIndex,
+                        true
+                    );
+
+                    window.requestAnimationFrame(
+                        function () {
+                            backgroundElement
+                                .classList.remove(
+                                    'bg-changing'
+                                );
+                        }
+                    );
+
+                    window.setTimeout(
+                        function () {
+                            backgroundButton.disabled =
+                                false;
+                        },
+                        350
+                    );
+                },
+                180
+            );
+        }
+    );
+})();
+</script>
+    
 </body>
 </html>
