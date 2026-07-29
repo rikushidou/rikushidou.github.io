@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    >
+
     <title>✨ 二次元 · 初音未来</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
@@ -675,8 +686,6 @@ body.day-mode .background-toggle {
 <div class="bg-image"></div>
 <canvas id="sakura-canvas"></canvas>
     
-    <div class="bg-image"></div>
-    <canvas id="sakura-canvas"></canvas>
 
     <div class="main-content">
         <!-- 您的用户名 -->
@@ -1225,17 +1234,24 @@ ap.audio.addEventListener(
     }
 );
 
-
 /* 暂停音乐 */
 ap.audio.addEventListener(
     'pause',
     stopMusicEffects
 );
-    </script>
+
 
 /* 音乐播放结束 */
+ap.audio.addEventListener(
+    'ended',
+    stopMusicEffects
+);
+</script>
+
+
 <!-- 鼠标点击樱花 -->
 <script>
+
 document.addEventListener('click', function (event) {
     /* 点击播放器和主题按钮时不生成樱花 */
     if (
