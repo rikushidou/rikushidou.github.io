@@ -555,6 +555,94 @@ body.day-mode .theme-toggle {
         font-size: 18px;
     }
 }
+
+        /* ===== 背景切换按钮 ===== */
+
+.background-toggle {
+    position: fixed;
+    top: 82px;
+    right: 22px;
+    z-index: 10000;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    background: rgba(20, 12, 30, 0.62);
+    color: #ffd6e7;
+
+    font-size: 20px;
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        background 0.45s ease,
+        color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+.background-toggle:hover {
+    transform:
+        translateY(-2px)
+        rotate(-10deg);
+}
+
+.background-toggle:active {
+    transform: scale(0.92);
+}
+
+
+/* 背景切换时短暂淡出 */
+.bg-image {
+    transition:
+        opacity 0.35s ease,
+        filter 0.5s ease;
+}
+
+.bg-image.bg-changing {
+    opacity: 0.18;
+}
+
+
+/* 日间模式下的背景按钮 */
+body.day-mode .background-toggle {
+    color: #654e7c;
+
+    background:
+        rgba(255, 255, 255, 0.76);
+
+    border-color:
+        rgba(105, 75, 135, 0.22);
+
+    box-shadow:
+        0 6px 24px
+        rgba(90, 65, 120, 0.16);
+}
+
+
+/* 手机端 */
+@media (max-width: 600px) {
+    .background-toggle {
+        top: 66px;
+        right: 14px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+}
         
     </style>
 </head>
