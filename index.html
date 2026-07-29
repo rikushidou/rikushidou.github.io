@@ -393,6 +393,169 @@
         margin-bottom: 4px;
     }
 }  
+
+/* ===== 日间 / 夜间模式 ===== */
+
+.theme-toggle {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 10000;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    background: rgba(20, 12, 30, 0.62);
+    color: #ffd6e7;
+
+    font-size: 20px;
+
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        background 0.45s ease,
+        color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+.theme-toggle:hover {
+    transform:
+        translateY(-2px)
+        rotate(10deg);
+}
+
+.theme-toggle:active {
+    transform: scale(0.92);
+}
+
+
+/* 给主题切换增加柔和过渡 */
+body,
+.bg-image,
+.bg-image::after,
+.subtitle,
+.clock-container,
+.bio,
+.social-links a,
+.footer {
+    transition:
+        background 0.5s ease,
+        color 0.5s ease,
+        filter 0.5s ease,
+        border-color 0.5s ease,
+        box-shadow 0.5s ease;
+}
+
+
+/* 日间背景 */
+body.day-mode {
+    background: #e8f5ff;
+}
+
+body.day-mode .bg-image {
+    filter:
+        brightness(0.95)
+        saturate(1.08);
+}
+
+body.day-mode .bg-image::after {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(236, 249, 255, 0.22),
+            rgba(255, 230, 243, 0.30)
+        );
+}
+
+
+/* 日间玻璃卡片 */
+body.day-mode .subtitle,
+body.day-mode .clock-container,
+body.day-mode .bio {
+    background:
+        rgba(255, 255, 255, 0.58);
+
+    border-color:
+        rgba(115, 80, 145, 0.20);
+
+    box-shadow:
+        0 8px 28px
+        rgba(95, 70, 125, 0.10);
+}
+
+body.day-mode .subtitle,
+body.day-mode .bio p {
+    color: #503d60;
+}
+
+body.day-mode .clock-label {
+    color: rgba(65, 45, 80, 0.68);
+}
+
+
+/* 日间社交按钮 */
+body.day-mode .social-links a {
+    color: #503d60;
+
+    background:
+        rgba(255, 255, 255, 0.64);
+
+    border-color:
+        rgba(115, 80, 145, 0.20);
+}
+
+body.day-mode .social-links a:hover {
+    background:
+        rgba(255, 230, 243, 0.86);
+}
+
+
+/* 日间页脚 */
+body.day-mode .footer {
+    color: rgba(65, 45, 80, 0.65);
+}
+
+
+/* 日间切换按钮 */
+body.day-mode .theme-toggle {
+    color: #654e7c;
+
+    background:
+        rgba(255, 255, 255, 0.76);
+
+    border-color:
+        rgba(105, 75, 135, 0.22);
+
+    box-shadow:
+        0 6px 24px
+        rgba(90, 65, 120, 0.16);
+}
+
+
+@media (max-width: 600px) {
+    .theme-toggle {
+        top: 14px;
+        right: 14px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+}
+        
     </style>
 </head>
 <body>
