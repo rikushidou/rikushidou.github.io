@@ -232,6 +232,167 @@
             rotate(var(--rotate));
     }
 }
+      /* ===== 音乐频谱与旋转唱片 ===== */
+
+.music-visualizer {
+    position: fixed;
+    right: 28px;
+    bottom: 26px;
+    width: 330px;
+    height: 170px;
+    z-index: 4;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    pointer-events: none;
+}
+
+/* 真实音乐频谱 */
+#spectrum-canvas {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+
+    filter:
+        drop-shadow(0 0 6px rgba(255, 158, 181, 0.65))
+        drop-shadow(0 0 12px rgba(161, 140, 209, 0.35));
+}
+
+/* 黑胶唱片 */
+.vinyl-record {
+    position: relative;
+    z-index: 1;
+
+    width: 132px;
+    height: 132px;
+    margin-bottom: 6px;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    background:
+        repeating-radial-gradient(
+            circle at center,
+            #17131b 0,
+            #17131b 3px,
+            #2c2632 4px,
+            #2c2632 5px
+        );
+
+    border: 2px solid rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        0 0 20px rgba(255, 158, 181, 0.45),
+        0 0 45px rgba(161, 140, 209, 0.25),
+        inset 0 0 18px rgba(255, 255, 255, 0.08);
+
+    animation: vinylSpin 7s linear infinite;
+    animation-play-state: paused;
+}
+
+/* 播放时才旋转 */
+.vinyl-record.playing {
+    animation-play-state: running;
+}
+
+/* 唱片上的纹理光泽 */
+.vinyl-record::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            from 20deg,
+            transparent 0deg,
+            rgba(255, 255, 255, 0.15) 35deg,
+            transparent 70deg,
+            transparent 180deg,
+            rgba(255, 255, 255, 0.08) 220deg,
+            transparent 260deg
+        );
+
+    pointer-events: none;
+}
+
+/* 唱片中心孔 */
+.vinyl-record::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    width: 10px;
+    height: 10px;
+
+    z-index: 3;
+
+    border-radius: 50%;
+    background: #f9e7f1;
+
+    box-shadow:
+        0 0 0 3px rgba(20, 15, 25, 0.8),
+        0 0 9px rgba(255, 183, 197, 0.8);
+
+    transform: translate(-50%, -50%);
+}
+
+/* 唱片中央封面 */
+.vinyl-cover {
+    position: absolute;
+    left: 25%;
+    top: 25%;
+
+    width: 50%;
+    height: 50%;
+
+    z-index: 1;
+
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 20%;
+
+    border: 2px solid rgba(255, 255, 255, 0.28);
+}
+
+/* 唱片旋转动画 */
+@keyframes vinylSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 手机端缩小，避免遮挡页面 */
+@media (max-width: 700px) {
+    .music-visualizer {
+        right: 8px;
+        bottom: 72px;
+
+        width: 220px;
+        height: 120px;
+    }
+
+    .vinyl-record {
+        width: 88px;
+        height: 88px;
+        margin-bottom: 4px;
+    }
+}  
     </style>
 </head>
 <body>
@@ -384,11 +545,27 @@
         })();
     </script>
 
+<!-- 音乐频谱与旋转唱片 -->
+<div class="music-visualizer" aria-hidden="true">
+    <canvas id="spectrum-canvas"></canvas>
+
+    <div class="vinyl-record" id="vinyl-record">
+        <img
+            class="vinyl-cover"
+            src="images/miku.PNG"
+            alt=""
+        >
+    </div>
+</div>
+    
 <div id="aplayer"></div>
 
 <script>
+/* ===== APlayer 音乐播放器 ===== */
+
 const ap = new APlayer({
     container: document.getElementById('aplayer'),
+
     fixed: true,
     autoplay: false,
     loop: 'all',
@@ -398,11 +575,391 @@ const ap = new APlayer({
         {
             name: '初音未来 - 千本樱',
             artist: 'Hatsune Miku',
+
             url: 'music/song.mp3',
-            cover: 'img/miku.jpg'
+
+            /* 使用已经存在的初音图片 */
+            cover: 'images/miku.PNG'
         }
     ]
 });
+
+
+/* ===== 真实音乐频谱 ===== */
+
+const spectrumCanvas =
+    document.getElementById('spectrum-canvas');
+
+const spectrumContext =
+    spectrumCanvas.getContext('2d');
+
+const vinylRecord =
+    document.getElementById('vinyl-record');
+
+
+let audioContext = null;
+let analyser = null;
+let mediaSource = null;
+let frequencyData = null;
+
+let spectrumAnimation = null;
+let spectrumPlaying = false;
+
+
+/* 调整 Canvas 清晰度 */
+function resizeSpectrumCanvas() {
+    const rect =
+        spectrumCanvas.getBoundingClientRect();
+
+    const devicePixelRatioValue =
+        Math.min(window.devicePixelRatio || 1, 2);
+
+    spectrumCanvas.width =
+        Math.max(
+            1,
+            Math.round(
+                rect.width * devicePixelRatioValue
+            )
+        );
+
+    spectrumCanvas.height =
+        Math.max(
+            1,
+            Math.round(
+                rect.height * devicePixelRatioValue
+            )
+        );
+
+    spectrumContext.setTransform(
+        devicePixelRatioValue,
+        0,
+        0,
+        devicePixelRatioValue,
+        0,
+        0
+    );
+}
+
+
+resizeSpectrumCanvas();
+
+window.addEventListener(
+    'resize',
+    resizeSpectrumCanvas
+);
+
+
+/* 第一次播放时创建音频分析器 */
+function initializeSpectrum() {
+    if (audioContext) {
+        return;
+    }
+
+    const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        console.warn('当前浏览器不支持音乐频谱。');
+        return;
+    }
+
+    audioContext =
+        new AudioContextClass();
+
+    analyser =
+        audioContext.createAnalyser();
+
+    analyser.fftSize = 256;
+
+    analyser.smoothingTimeConstant = 0.82;
+
+    /*
+     * 把 APlayer 的 audio 元素接入
+     * Web Audio API 分析器
+     */
+    mediaSource =
+        audioContext.createMediaElementSource(
+            ap.audio
+        );
+
+    mediaSource.connect(analyser);
+
+    /*
+     * 必须重新连接到扬声器，
+     * 否则经过分析器后可能没有声音
+     */
+    analyser.connect(
+        audioContext.destination
+    );
+
+    frequencyData =
+        new Uint8Array(
+            analyser.frequencyBinCount
+        );
+}
+
+
+/* 绘制频谱 */
+function drawSpectrum() {
+    spectrumAnimation = null;
+
+    const width =
+        spectrumCanvas.clientWidth;
+
+    const height =
+        spectrumCanvas.clientHeight;
+
+    spectrumContext.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    if (
+        !spectrumPlaying ||
+        !analyser ||
+        !frequencyData
+    ) {
+        return;
+    }
+
+    analyser.getByteFrequencyData(
+        frequencyData
+    );
+
+    /*
+     * 大屏幕显示18根音柱，
+     * 手机显示10根，左右镜像。
+     */
+    const barsPerSide =
+        width < 250 ? 10 : 18;
+
+    /*
+     * 唱片半径以及唱片和音柱间距
+     */
+    const recordRadius =
+        width < 250 ? 48 : 72;
+
+    const recordGap = 9;
+    const barGap = 2.5;
+
+    const sideWidth =
+        width / 2 -
+        recordRadius -
+        recordGap;
+
+    const barWidth =
+        Math.max(
+            2,
+            (
+                sideWidth -
+                barGap *
+                (barsPerSide - 1)
+            ) /
+            barsPerSide
+        );
+
+    /*
+     * 粉色到紫色的渐变
+     */
+    const gradient =
+        spectrumContext.createLinearGradient(
+            0,
+            height,
+            0,
+            0
+        );
+
+    gradient.addColorStop(
+        0,
+        'rgba(255, 158, 181, 0.35)'
+    );
+
+    gradient.addColorStop(
+        0.55,
+        'rgba(251, 194, 235, 0.85)'
+    );
+
+    gradient.addColorStop(
+        1,
+        'rgba(161, 140, 209, 1)'
+    );
+
+    spectrumContext.fillStyle = gradient;
+
+    for (
+        let index = 0;
+        index < barsPerSide;
+        index++
+    ) {
+        const frequencyIndex =
+            Math.floor(
+                (
+                    index /
+                    barsPerSide
+                ) *
+                frequencyData.length *
+                0.72
+            );
+
+        const frequencyValue =
+            frequencyData[frequencyIndex] /
+            255;
+
+        /*
+         * 音量越高，柱子越高
+         */
+        const barHeight =
+            5 +
+            Math.pow(
+                frequencyValue,
+                1.18
+            ) *
+            (height - 20);
+
+        const barY =
+            height -
+            barHeight -
+            6;
+
+        /*
+         * 左侧音柱，从唱片旁向左展开
+         */
+        const leftX =
+            width / 2 -
+            recordRadius -
+            recordGap -
+            (index + 1) *
+            barWidth -
+            index *
+            barGap;
+
+        /*
+         * 右侧镜像音柱
+         */
+        const rightX =
+            width / 2 +
+            recordRadius +
+            recordGap +
+            index *
+            (
+                barWidth +
+                barGap
+            );
+
+        spectrumContext.globalAlpha =
+            0.35 +
+            frequencyValue * 0.65;
+
+        spectrumContext.fillRect(
+            leftX,
+            barY,
+            barWidth,
+            barHeight
+        );
+
+        spectrumContext.fillRect(
+            rightX,
+            barY,
+            barWidth,
+            barHeight
+        );
+    }
+
+    spectrumContext.globalAlpha = 1;
+
+    spectrumAnimation =
+        requestAnimationFrame(
+            drawSpectrum
+        );
+}
+
+
+/* 停止频谱和唱片 */
+function stopMusicEffects() {
+    spectrumPlaying = false;
+
+    vinylRecord.classList.remove(
+        'playing'
+    );
+
+    if (spectrumAnimation) {
+        cancelAnimationFrame(
+            spectrumAnimation
+        );
+
+        spectrumAnimation = null;
+    }
+
+    spectrumContext.clearRect(
+        0,
+        0,
+        spectrumCanvas.clientWidth,
+        spectrumCanvas.clientHeight
+    );
+}
+
+
+/* 播放音乐 */
+ap.audio.addEventListener(
+    'play',
+    async function () {
+        try {
+            initializeSpectrum();
+
+            /*
+             * 浏览器通常要求用户点击后
+             * 才允许启动 AudioContext
+             */
+            if (
+                audioContext &&
+                audioContext.state ===
+                'suspended'
+            ) {
+                await audioContext.resume();
+            }
+
+            spectrumPlaying = true;
+
+            vinylRecord.classList.add(
+                'playing'
+            );
+
+            if (!spectrumAnimation) {
+                drawSpectrum();
+            }
+        } catch (error) {
+            console.error(
+                '音乐频谱启动失败：',
+                error
+            );
+
+            /*
+             * 即使频谱失败，
+             * 唱片仍然能够旋转
+             */
+            vinylRecord.classList.add(
+                'playing'
+            );
+        }
+    }
+);
+
+
+/* 暂停音乐 */
+ap.audio.addEventListener(
+    'pause',
+    stopMusicEffects
+);
+
+
+/* 音乐播放结束 */
+ap.audio.addEventListener(
+    'ended',
+    stopMusicEffects
+);
 </script>
 
 <script>
