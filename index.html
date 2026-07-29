@@ -967,18 +967,10 @@ ap.audio.addEventListener(
 
 
 /* 音乐播放结束 */
-ap.audio.addEventListener(
-    'ended',
-    stopMusicEffects
-);
-</script>
-
+<!-- 鼠标点击樱花 -->
 <script>
 document.addEventListener('click', function (event) {
-    // 点击播放器按钮时不生成樱花，避免影响操作
-    <!-- 原来的鼠标点击樱花代码 -->
-<script>
-document.addEventListener('click', function (event) {
+    /* 点击播放器和主题按钮时不生成樱花 */
     if (
         event.target.closest(
             '.aplayer, .theme-toggle'
@@ -986,21 +978,6 @@ document.addEventListener('click', function (event) {
     ) {
         return;
     }
-
-    // 其余樱花代码保持不变
-});
-</script>
-
-
-<!-- 日间 / 夜间模式代码 -->
-<script>
-(function () {
-    // 上面提供的完整主题代码
-})();
-</script>
-
-</body>
-</html>
 
     const petalCount = 10;
 
@@ -1017,19 +994,33 @@ document.addEventListener('click', function (event) {
             (Math.PI * 2 * i) / petalCount +
             (Math.random() - 0.5) * 0.6;
 
-        const distance = 35 + Math.random() * 55;
+        const distance =
+            35 + Math.random() * 55;
 
-        const moveX = Math.cos(angle) * distance;
-        const moveY = Math.sin(angle) * distance;
+        const moveX =
+            Math.cos(angle) * distance;
 
-        petal.style.setProperty('--move-x', moveX + 'px');
-        petal.style.setProperty('--move-y', moveY + 'px');
+        const moveY =
+            Math.sin(angle) * distance;
+
+        petal.style.setProperty(
+            '--move-x',
+            moveX + 'px'
+        );
+
+        petal.style.setProperty(
+            '--move-y',
+            moveY + 'px'
+        );
+
         petal.style.setProperty(
             '--rotate',
             (Math.random() * 360 - 180) + 'deg'
         );
 
-        petal.style.fontSize = (12 + Math.random() * 12) + 'px';
+        petal.style.fontSize =
+            (12 + Math.random() * 12) + 'px';
+
         petal.style.animationDuration =
             (650 + Math.random() * 400) + 'ms';
 
@@ -1046,9 +1037,9 @@ document.addEventListener('click', function (event) {
 });
 </script>
 
-<script>
-/* ===== 日间 / 夜间模式切换 ===== */
 
+<!-- 日间 / 夜间模式 -->
+<script>
 (function () {
     const themeToggle =
         document.getElementById('theme-toggle');
@@ -1056,24 +1047,20 @@ document.addEventListener('click', function (event) {
     const themeIcon =
         document.getElementById('theme-icon');
 
-    /*
-     * 应用主题
-     * day：日间模式
-     * night：夜间模式
-     */
-    function applyTheme(theme, saveTheme) {
-        const isDayMode = theme === 'day';
+    if (!themeToggle || !themeIcon) {
+        console.error('找不到主题切换按钮。');
+        return;
+    }
+
+    function applyTheme(theme, shouldSave) {
+        const isDayMode =
+            theme === 'day';
 
         document.body.classList.toggle(
             'day-mode',
             isDayMode
         );
 
-        /*
-         * 按钮图标显示即将切换到的模式：
-         * 日间模式下显示月亮；
-         * 夜间模式下显示太阳。
-         */
         themeIcon.className =
             isDayMode
                 ? 'fas fa-moon'
@@ -1094,10 +1081,7 @@ document.addEventListener('click', function (event) {
             label
         );
 
-        /*
-         * 用户主动切换时保存选择
-         */
-        if (saveTheme) {
+        if (shouldSave) {
             try {
                 localStorage.setItem(
                     'miku-theme',
@@ -1105,62 +1089,50 @@ document.addEventListener('click', function (event) {
                 );
             } catch (error) {
                 console.warn(
-                    '无法保存主题设置：',
+                    '主题设置保存失败：',
                     error
                 );
             }
         }
     }
 
-
-    /*
-     * 读取上一次选择；
-     * 没有记录时默认使用夜间模式。
-     */
-    let savedTheme = null;
+    let savedTheme = 'night';
 
     try {
-        savedTheme =
-            localStorage.getItem(
-                'miku-theme'
-            );
+        const storedTheme =
+            localStorage.getItem('miku-theme');
+
+        if (
+            storedTheme === 'day' ||
+            storedTheme === 'night'
+        ) {
+            savedTheme = storedTheme;
+        }
     } catch (error) {
         console.warn(
-            '无法读取主题设置：',
+            '主题设置读取失败：',
             error
         );
     }
 
-    const initialTheme =
-        savedTheme === 'day' ||
-        savedTheme === 'night'
-            ? savedTheme
-            : 'night';
+    applyTheme(savedTheme, false);
 
-    applyTheme(initialTheme, false);
-
-
-    /*
-     * 点击按钮切换模式
-     */
     themeToggle.addEventListener(
         'click',
         function () {
-            const currentIsDay =
+            const isDayMode =
                 document.body.classList.contains(
                     'day-mode'
                 );
 
-            const nextTheme =
-                currentIsDay
-                    ? 'night'
-                    : 'day';
-
-            applyTheme(nextTheme, true);
+            applyTheme(
+                isDayMode ? 'night' : 'day',
+                true
+            );
         }
     );
 })();
 </script>
-    
+
 </body>
 </html>
