@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>✨ 二次元 · 初音未来</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: #0b0a0c;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 0;
+            /* 替换为您的初音图片 */
+            background-image: url('images/miku.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-color: #0b0a0c;
+            filter: brightness(0.6) saturate(1.1);
+        }
+        .bg-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(20, 10, 30, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-right: max(20px, env(safe-area-inset-right));
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            padding-left: max(20px, env(safe-area-inset-left));
+            max-width: 800px;
+            width: 100%;
+            margin: auto;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .username {
+            font-size: clamp(2.15rem, 11vw, 6rem);
+            font-weight: 900;
+            letter-spacing: clamp(2px, 1.2vw, 6px);
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1, #fbc2eb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 6s ease infinite;
+            text-shadow: 0 0 40px rgba(255, 150, 200, 0.3);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            font-weight: 400;
+            letter-spacing: 8px;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .subtitle i { margin: 0 6px; color: #ffb7c5; }
+
+        /* 时钟样式（您复制的部分） */
+        .clock-container {
+            margin: 16px auto 10px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(6px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: auto;
+            max-width: 90%;
+        }
+        .clock {
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fbc2eb, #a18cd1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-variant-numeric: tabular-nums;
+        }
+        .clock-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            margin-top: 2px;
+        }
+
+        /* 以下为其他原有样式，保持完整 */
+        .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 18px 0 30px; }
+        .tag {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(6px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: #f0e6ff;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .tag:hover {
+            background: rgba(255, 200, 220, 0.20);
+            border-color: #ffb7c5;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 150, 200, 0.15);
+        }
+        .tag i { margin-right: 6px; color: #ffb7c5; }
+
+        .social-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+        .social-links a,
+        .social-links .social-placeholder {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 24px; border-radius: 60px;
+            background: rgba(0, 0, 0, 0.30); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #f0e6ff; text-decoration: none; font-size: 0.9rem;
+            transition: all 0.3s; letter-spacing: 1px;
+        }
+        .social-links a i,
+        .social-links .social-placeholder i { font-size: 1.2rem; color: #ffb7c5; transition: transform 0.3s; }
+        .social-links .social-placeholder {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .social-links a:hover {
+            background: rgba(255, 200, 220, 0.15);
+            border-color: #ffb7c5;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 100, 150, 0.15);
+        }
+        .social-links a:hover i { transform: scale(1.2) rotate(5deg); }
+
+        .footer { margin-top: 40px; font-size: 0.7rem; color: rgba(255, 255, 255, 0.30); letter-spacing: 3px; backdrop-filter: blur(4px); padding: 8px 0; }
+        .footer i { color: #ffb7c5; margin: 0 4px; }
+
+        .audio-fallback {
+            position: fixed;
+            left: calc(12px + env(safe-area-inset-left));
+            bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 10001;
+            width: min(360px, calc(100vw - 24px));
+        }
+        .audio-fallback audio { display: block; width: 100%; }
+
+        .bio {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(6px);
+            padding: 18px 24px;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .bio p { color: #f0e6ff; font-size: 1.1rem; line-height: 1.8; text-align: center; letter-spacing: 2px; }
+        .bio .sub-text { font-size: 0.9rem; color: #ffb7c5; letter-spacing: 3px; }
+
+        /* 樱花 Canvas */
+        #sakura-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .username { letter-spacing: 3px; }
+            .subtitle { letter-spacing: 4px; font-size: 0.9rem; padding: 4px 16px; }
+            .social-links a { padding: 6px 14px; font-size: 0.75rem; }
+            .social-links .social-placeholder { padding: 6px 14px; font-size: 0.75rem; }
+            .tag { font-size: 0.7rem; padding: 4px 12px; }
+            .main-content {
+                padding-bottom: max(92px, calc(env(safe-area-inset-bottom) + 72px));
+            }
+        }
+        
+        /* 鼠标点击樱花特效 */
+.click-sakura {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    user-select: none;
+    transform: translate(-50%, -50%);
+    animation: clickSakura 900ms ease-out forwards;
+}
+
+@keyframes clickSakura {
+    0% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            translate(0, 0)
+            scale(0.6)
+            rotate(0deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            translate(var(--move-x), var(--move-y))
+            scale(1.25)
+            rotate(var(--rotate));
+    }
+}
+      /* ===== 音乐频谱与旋转唱片 ===== */
+
+.music-visualizer {
+    position: fixed;
+    right: 28px;
+    bottom: 26px;
+    width: 330px;
+    height: 170px;
+    z-index: 4;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    pointer-events: none;
+}
+
+/* 真实音乐频谱 */
+#spectrum-canvas {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+
+    filter:
+        drop-shadow(0 0 6px rgba(255, 158, 181, 0.65))
+        drop-shadow(0 0 12px rgba(161, 140, 209, 0.35));
+}
+
+/* 黑胶唱片 */
+.vinyl-record {
+    position: relative;
+    z-index: 1;
+
+    width: 132px;
+    height: 132px;
+    margin-bottom: 6px;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    background:
+        repeating-radial-gradient(
+            circle at center,
+            #17131b 0,
+            #17131b 3px,
+            #2c2632 4px,
+            #2c2632 5px
+        );
+
+    border: 2px solid rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        0 0 20px rgba(255, 158, 181, 0.45),
+        0 0 45px rgba(161, 140, 209, 0.25),
+        inset 0 0 18px rgba(255, 255, 255, 0.08);
+
+    animation: vinylSpin 7s linear infinite;
+    animation-play-state: paused;
+}
+
+/* 播放时才旋转 */
+.vinyl-record.playing {
+    animation-play-state: running;
+}
+
+/* 唱片上的纹理光泽 */
+.vinyl-record::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            from 20deg,
+            transparent 0deg,
+            rgba(255, 255, 255, 0.15) 35deg,
+            transparent 70deg,
+            transparent 180deg,
+            rgba(255, 255, 255, 0.08) 220deg,
+            transparent 260deg
+        );
+
+    pointer-events: none;
+}
+
+/* 唱片中心孔 */
+.vinyl-record::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    width: 10px;
+    height: 10px;
+
+    z-index: 3;
+
+    border-radius: 50%;
+    background: #f9e7f1;
+
+    box-shadow:
+        0 0 0 3px rgba(20, 15, 25, 0.8),
+        0 0 9px rgba(255, 183, 197, 0.8);
+
+    transform: translate(-50%, -50%);
+}
+
+/* 唱片中央封面 */
+.vinyl-cover {
+    position: absolute;
+    left: 25%;
+    top: 25%;
+
+    width: 50%;
+    height: 50%;
+
+    z-index: 1;
+
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 20%;
+
+    border: 2px solid rgba(255, 255, 255, 0.28);
+}
+
+/* 唱片旋转动画 */
+@keyframes vinylSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 手机端缩小，避免遮挡页面 */
+@media (max-width: 700px) {
+    .music-visualizer {
+        right: 8px;
+        bottom: calc(72px + env(safe-area-inset-bottom));
+
+        width: min(200px, 58vw);
+        height: 108px;
+    }
+
+    .vinyl-record {
+        width: 78px;
+        height: 78px;
+        margin-bottom: 4px;
+    }
+}
+
+/* 极窄或低高度屏幕优先保证正文和播放器可见 */
+@media (max-width: 480px), (max-height: 600px) {
+    .music-visualizer {
+        display: none;
+    }
+}
+
+/* ===== 日间 / 夜间模式 ===== */
+
+.theme-toggle {
+    position: fixed;
+    top: calc(22px + env(safe-area-inset-top));
+    right: calc(22px + env(safe-area-inset-right));
+    z-index: 10000;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    background: rgba(20, 12, 30, 0.62);
+    color: #ffd6e7;
+
+    font-size: 20px;
+
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        background 0.45s ease,
+        color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+.theme-toggle:hover {
+    transform:
+        translateY(-2px)
+        rotate(10deg);
+}
+
+.theme-toggle:active {
+    transform: scale(0.92);
+}
+
+
+/* 给主题切换增加柔和过渡 */
+body,
+.bg-image,
+.bg-image::after,
+.subtitle,
+.clock-container,
+.bio,
+.social-links a,
+.footer {
+    transition:
+        background 0.5s ease,
+        color 0.5s ease,
+        filter 0.5s ease,
+        border-color 0.5s ease,
+        box-shadow 0.5s ease;
+}
+
+
+/* 日间背景 */
+body.day-mode {
+    background: #e8f5ff;
+}
+
+body.day-mode .bg-image {
+    filter:
+        brightness(0.95)
+        saturate(1.08);
+}
+
+body.day-mode .bg-image::after {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(236, 249, 255, 0.22),
+            rgba(255, 230, 243, 0.30)
+        );
+}
+
+
+/* 日间玻璃卡片 */
+body.day-mode .subtitle,
+body.day-mode .clock-container,
+body.day-mode .bio {
+    background:
+        rgba(255, 255, 255, 0.58);
+
+    border-color:
+        rgba(115, 80, 145, 0.20);
+
+    box-shadow:
+        0 8px 28px
+        rgba(95, 70, 125, 0.10);
+}
+
+body.day-mode .subtitle,
+body.day-mode .bio p {
+    color: #503d60;
+}
+
+body.day-mode .clock-label {
+    color: rgba(65, 45, 80, 0.68);
+}
+
+
+/* 日间社交按钮 */
+body.day-mode .social-links a {
+    color: #503d60;
+
+    background:
+        rgba(255, 255, 255, 0.64);
+
+    border-color:
+        rgba(115, 80, 145, 0.20);
+}
+
+body.day-mode .social-links .social-placeholder {
+    color: #503d60;
+
+    background:
+        rgba(255, 255, 255, 0.64);
+
+    border-color:
+        rgba(115, 80, 145, 0.20);
+}
+
+body.day-mode .social-links a:hover {
+    background:
+        rgba(255, 230, 243, 0.86);
+}
+
+
+/* 日间页脚 */
+body.day-mode .footer {
+    color: rgba(65, 45, 80, 0.65);
+}
+
+
+/* 日间切换按钮 */
+body.day-mode .theme-toggle {
+    color: #654e7c;
+
+    background:
+        rgba(255, 255, 255, 0.76);
+
+    border-color:
+        rgba(105, 75, 135, 0.22);
+
+    box-shadow:
+        0 6px 24px
+        rgba(90, 65, 120, 0.16);
+}
+
+
+@media (max-width: 600px) {
+    .theme-toggle {
+        top: calc(14px + env(safe-area-inset-top));
+        right: calc(14px + env(safe-area-inset-right));
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+}
+
+        /* ===== 背景切换按钮 ===== */
+
+.background-toggle {
+    position: fixed;
+    top: calc(82px + env(safe-area-inset-top));
+    right: calc(22px + env(safe-area-inset-right));
+    z-index: 10000;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    background: rgba(20, 12, 30, 0.62);
+    color: #ffd6e7;
+
+    font-size: 20px;
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        background 0.45s ease,
+        color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+.background-toggle:hover {
+    transform:
+        translateY(-2px)
+        rotate(-10deg);
+}
+
+.background-toggle:active {
+    transform: scale(0.92);
+}
+
+
+/* 背景切换时短暂淡出 */
+.bg-image {
+    transition:
+        opacity 0.35s ease,
+        filter 0.5s ease;
+}
+
+.bg-image.bg-changing {
+    opacity: 0.18;
+}
+
+
+/* 日间模式下的背景按钮 */
+body.day-mode .background-toggle {
+    color: #654e7c;
+
+    background:
+        rgba(255, 255, 255, 0.76);
+
+    border-color:
+        rgba(105, 75, 135, 0.22);
+
+    box-shadow:
+        0 6px 24px
+        rgba(90, 65, 120, 0.16);
+}
+
+
+/* 手机端 */
+@media (max-width: 600px) {
+    .background-toggle {
+        top: calc(66px + env(safe-area-inset-top));
+        right: calc(14px + env(safe-area-inset-right));
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+}
+
+/* 减少动态效果偏好 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    #sakura-canvas {
+        display: none;
+    }
+}
+        
+    </style>
+</head>
+<body>
+
+<!-- 日间 / 夜间模式切换按钮 -->
+<button
+    class="theme-toggle"
+    id="theme-toggle"
+    type="button"
+    aria-label="切换到日间模式"
+    title="切换到日间模式"
+>
+    <i class="fas fa-sun" id="theme-icon"></i>
+</button>
+
+
+<!-- 背景切换按钮 -->
+<button
+    class="background-toggle"
+    id="background-toggle"
+    type="button"
+    aria-label="切换背景"
+    title="切换背景"
+>
+    <i class="fas fa-image"></i>
+</button>
+
+
+<div class="bg-image"></div>
+<canvas id="sakura-canvas"></canvas>
+    
+
+    <div class="main-content">
+        <!-- 您的用户名 -->
+        <div class="username">rikushidou</div>
+
+        <!-- 副标题（方案一） -->
+        <div class="subtitle">
+            <i class="fas fa-music"></i>
+            初音未来 · 跨越次元的歌姬
+            <i class="fas fa-music"></i>
+        </div>
+
+        <!-- 时钟 -->
+        <div class="clock-container">
+            <div class="clock" id="live-clock">--:--:--</div>
+            <div class="clock-label">🎵 此刻 · 二次元时间 🎵</div>
+        </div>
+
+        <!-- BIO 卡片（方案一完整标语） -->
+        <div class="bio">
+            <p>
+                🎵 与世界的第一声共鸣 🎵<br>
+                <span class="sub-text">The First Sound from the Future</span>
+            </p>
+        </div>
+
+        <!-- 社交链接 -->
+        <div class="social-links">
+            <a href="https://github.com/rikushidou" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://x.com/rikushidou" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a>
+            <span class="social-placeholder" title="B站链接待补充" aria-label="B站链接待补充"><i class="fab fa-bilibili"></i> B站（待补充）</span>
+            <a href="mailto:691097606lst@gmail.com"><i class="fas fa-envelope"></i> 邮箱</a>
+        </div>
+
+        <div class="footer">
+            <i class="fas fa-star"></i> 热爱即正义 · 二次元永存 <i class="fas fa-star"></i>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // === 樱花粒子 ===
+            const canvas = document.getElementById('sakura-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let petals = [];
+            const PETAL_COUNT = 45;
+            const reducedMotionQuery = window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            );
+            let petalAnimation = null;
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+
+                const pixelRatio = Math.min(
+                    window.devicePixelRatio || 1,
+                    2
+                );
+
+                canvas.width = Math.max(
+                    1,
+                    Math.round(width * pixelRatio)
+                );
+                canvas.height = Math.max(
+                    1,
+                    Math.round(height * pixelRatio)
+                );
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+
+                ctx.setTransform(
+                    pixelRatio,
+                    0,
+                    0,
+                    pixelRatio,
+                    0,
+                    0
+                );
+            }
+            resize();
+
+            class Petal {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height - height * 0.2;
+                    this.size = Math.random() * 12 + 6;
+                    this.speedX = (Math.random() - 0.5) * 0.8;
+                    this.speedY = Math.random() * 1.2 + 0.6;
+                    this.rotation = Math.random() * 360;
+                    this.rotSpeed = (Math.random() - 0.5) * 3;
+                    this.opacity = Math.random() * 0.5 + 0.4;
+                    this.shape = Math.random() > 0.5 ? 0 : 1;
+                }
+                update() {
+                    this.x += this.speedX + Math.sin(this.y * 0.01) * 0.3;
+                    this.y += this.speedY;
+                    this.rotation += this.rotSpeed;
+                    if (this.y > height + 20) { this.reset(); this.y = -20; }
+                    if (this.x < -20) this.x = width + 20;
+                    if (this.x > width + 20) this.x = -20;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation * Math.PI / 180);
+                    ctx.globalAlpha = this.opacity;
+                    ctx.shadowColor = 'rgba(255, 182, 193, 0.2)';
+                    ctx.shadowBlur = 10;
+                    const s = this.size;
+                    ctx.beginPath();
+                    if (this.shape === 0) {
+                        for (let i = 0; i < 5; i++) {
+                            const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                            const r = i === 0 ? s : s * 0.6;
+                            const x = Math.cos(angle) * r;
+                            const y = Math.sin(angle) * r;
+                            if (i === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                        }
+                        ctx.closePath();
+                        ctx.fillStyle = '#ffb7c5';
+                    } else {
+                        ctx.ellipse(0, 0, s * 0.5, s * 0.3, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ff9eb5';
+                    }
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            function initPetals() {
+                petals = [];
+                for (let i = 0; i < PETAL_COUNT; i++) {
+                    const p = new Petal();
+                    p.y = Math.random() * height;
+                    petals.push(p);
+                }
+            }
+            initPetals();
+
+            function animatePetals() {
+                petalAnimation = null;
+
+                if (
+                    document.hidden ||
+                    reducedMotionQuery.matches
+                ) {
+                    return;
+                }
+
+                ctx.clearRect(0, 0, width, height);
+                petals.forEach(p => { p.update(); p.draw(); });
+                petalAnimation =
+                    requestAnimationFrame(animatePetals);
+            }
+
+            function startPetalAnimation() {
+                if (
+                    petalAnimation === null &&
+                    !document.hidden &&
+                    !reducedMotionQuery.matches
+                ) {
+                    petalAnimation =
+                        requestAnimationFrame(animatePetals);
+                }
+            }
+
+            function stopPetalAnimation() {
+                if (petalAnimation !== null) {
+                    cancelAnimationFrame(petalAnimation);
+                    petalAnimation = null;
+                }
+
+                ctx.clearRect(0, 0, width, height);
+            }
+
+            startPetalAnimation();
+
+            let resizeAnimation = null;
+            window.addEventListener('resize', function () {
+                if (resizeAnimation !== null) {
+                    cancelAnimationFrame(resizeAnimation);
+                }
+
+                resizeAnimation =
+                    requestAnimationFrame(function () {
+                        resizeAnimation = null;
+                        resize();
+                        petals.forEach(function (petal) {
+                            petal.x = Math.random() * width;
+                            petal.y = Math.random() * height;
+                        });
+                    });
+            });
+
+            document.addEventListener(
+                'visibilitychange',
+                function () {
+                    if (document.hidden) {
+                        stopPetalAnimation();
+                    } else {
+                        startPetalAnimation();
+                    }
+                }
+            );
+
+            const handleMotionPreferenceChange =
+                function () {
+                    if (reducedMotionQuery.matches) {
+                        stopPetalAnimation();
+                    } else {
+                        startPetalAnimation();
+                    }
+                };
+
+            if (reducedMotionQuery.addEventListener) {
+                reducedMotionQuery.addEventListener(
+                    'change',
+                    handleMotionPreferenceChange
+                );
+            } else {
+                reducedMotionQuery.addListener(
+                    handleMotionPreferenceChange
+                );
+            }
+
+            // === 实时时钟 ===
+            function updateClock() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('live-clock').textContent = `${h}:${m}:${s}`;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            console.log('🌸 二次元主页已加载！');
+        })();
+    </script>
+
+<!-- 音乐频谱与旋转唱片 -->
+<div class="music-visualizer" aria-hidden="true">
+    <canvas id="spectrum-canvas"></canvas>
+
+    <div class="vinyl-record" id="vinyl-record">
+        <img
+            class="vinyl-cover"
+            src="images/miku.jpg"
+            alt=""
+        >
+    </div>
+</div>
+    
+<div id="aplayer"></div>
+
+<script>
+/* ===== APlayer 音乐播放器 ===== */
+
+const aplayerContainer =
+    document.getElementById('aplayer');
+
+if (typeof window.APlayer !== 'function') {
+    console.error(
+        'APlayer 加载失败，已切换到浏览器原生播放器。'
+    );
+
+    aplayerContainer.className = 'audio-fallback';
+
+    const fallbackAudio =
+        document.createElement('audio');
+
+    fallbackAudio.controls = true;
+    fallbackAudio.preload = 'metadata';
+    fallbackAudio.src = 'music/senbonzakura.ogg';
+
+    aplayerContainer.appendChild(fallbackAudio);
+
+    const musicVisualizer =
+        document.querySelector('.music-visualizer');
+
+    if (musicVisualizer) {
+        musicVisualizer.hidden = true;
+    }
+} else {
+const ap = new window.APlayer({
+    container: aplayerContainer,
+
+    fixed: true,
+    autoplay: false,
+    loop: 'all',
+    volume: 0.5,
+
+    audio: [
+        {
+            name: '千本樱（钢琴版）',
+            artist: 'Oturans',
+
+            url: 'music/senbonzakura.ogg',
+
+            /* 使用已经存在的初音图片 */
+            cover: 'images/miku.jpg'
+        }
+    ]
+});
+
+
+/* ===== 真实音乐频谱 ===== */
+
+const spectrumCanvas =
+    document.getElementById('spectrum-canvas');
+
+const spectrumContext =
+    spectrumCanvas.getContext('2d');
+
+const vinylRecord =
+    document.getElementById('vinyl-record');
+
+
+let audioContext = null;
+let analyser = null;
+let mediaSource = null;
+let frequencyData = null;
+
+let spectrumAnimation = null;
+let spectrumPlaying = false;
+
+
+/* 调整 Canvas 清晰度 */
+function resizeSpectrumCanvas() {
+    const rect =
+        spectrumCanvas.getBoundingClientRect();
+
+    const devicePixelRatioValue =
+        Math.min(window.devicePixelRatio || 1, 2);
+
+    spectrumCanvas.width =
+        Math.max(
+            1,
+            Math.round(
+                rect.width * devicePixelRatioValue
+            )
+        );
+
+    spectrumCanvas.height =
+        Math.max(
+            1,
+            Math.round(
+                rect.height * devicePixelRatioValue
+            )
+        );
+
+    spectrumContext.setTransform(
+        devicePixelRatioValue,
+        0,
+        0,
+        devicePixelRatioValue,
+        0,
+        0
+    );
+}
+
+
+resizeSpectrumCanvas();
+
+window.addEventListener(
+    'resize',
+    resizeSpectrumCanvas
+);
+
+
+/* 第一次播放时创建音频分析器 */
+function initializeSpectrum() {
+    if (audioContext) {
+        return;
+    }
+
+    const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        console.warn('当前浏览器不支持音乐频谱。');
+        return;
+    }
+
+    const nextAudioContext =
+        new AudioContextClass();
+
+    const nextAnalyser =
+        nextAudioContext.createAnalyser();
+
+    nextAnalyser.fftSize = 256;
+
+    nextAnalyser.smoothingTimeConstant = 0.82;
+
+    /*
+     * 把 APlayer 的 audio 元素接入
+     * Web Audio API 分析器
+     */
+    const nextMediaSource =
+        nextAudioContext.createMediaElementSource(
+            ap.audio
+        );
+
+    nextMediaSource.connect(nextAnalyser);
+
+    /*
+     * 必须重新连接到扬声器，
+     * 否则经过分析器后可能没有声音
+     */
+    nextAnalyser.connect(
+        nextAudioContext.destination
+    );
+
+    const nextFrequencyData =
+        new Uint8Array(
+            nextAnalyser.frequencyBinCount
+        );
+
+    audioContext = nextAudioContext;
+    analyser = nextAnalyser;
+    mediaSource = nextMediaSource;
+    frequencyData = nextFrequencyData;
+}
+
+
+/* 绘制频谱 */
+function drawSpectrum() {
+    spectrumAnimation = null;
+
+    const width =
+        spectrumCanvas.clientWidth;
+
+    const height =
+        spectrumCanvas.clientHeight;
+
+    spectrumContext.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    if (
+        !spectrumPlaying ||
+        !analyser ||
+        !frequencyData
+    ) {
+        return;
+    }
+
+    analyser.getByteFrequencyData(
+        frequencyData
+    );
+
+    /*
+     * 大屏幕显示18根音柱，
+     * 手机显示10根，左右镜像。
+     */
+    const barsPerSide =
+        width < 250 ? 10 : 18;
+
+    /*
+     * 唱片半径以及唱片和音柱间距
+     */
+    const recordRadius =
+        width < 250 ? 48 : 72;
+
+    const recordGap = 9;
+    const barGap = 2.5;
+
+    const sideWidth =
+        width / 2 -
+        recordRadius -
+        recordGap;
+
+    const barWidth =
+        Math.max(
+            2,
+            (
+                sideWidth -
+                barGap *
+                (barsPerSide - 1)
+            ) /
+            barsPerSide
+        );
+
+    /*
+     * 粉色到紫色的渐变
+     */
+    const gradient =
+        spectrumContext.createLinearGradient(
+            0,
+            height,
+            0,
+            0
+        );
+
+    gradient.addColorStop(
+        0,
+        'rgba(255, 158, 181, 0.35)'
+    );
+
+    gradient.addColorStop(
+        0.55,
+        'rgba(251, 194, 235, 0.85)'
+    );
+
+    gradient.addColorStop(
+        1,
+        'rgba(161, 140, 209, 1)'
+    );
+
+    spectrumContext.fillStyle = gradient;
+
+    for (
+        let index = 0;
+        index < barsPerSide;
+        index++
+    ) {
+        const frequencyIndex =
+            Math.floor(
+                (
+                    index /
+                    barsPerSide
+                ) *
+                frequencyData.length *
+                0.72
+            );
+
+        const frequencyValue =
+            frequencyData[frequencyIndex] /
+            255;
+
+        /*
+         * 音量越高，柱子越高
+         */
+        const barHeight =
+            5 +
+            Math.pow(
+                frequencyValue,
+                1.18
+            ) *
+            (height - 20);
+
+        const barY =
+            height -
+            barHeight -
+            6;
+
+        /*
+         * 左侧音柱，从唱片旁向左展开
+         */
+        const leftX =
+            width / 2 -
+            recordRadius -
+            recordGap -
+            (index + 1) *
+            barWidth -
+            index *
+            barGap;
+
+        /*
+         * 右侧镜像音柱
+         */
+        const rightX =
+            width / 2 +
+            recordRadius +
+            recordGap +
+            index *
+            (
+                barWidth +
+                barGap
+            );
+
+        spectrumContext.globalAlpha =
+            0.35 +
+            frequencyValue * 0.65;
+
+        spectrumContext.fillRect(
+            leftX,
+            barY,
+            barWidth,
+            barHeight
+        );
+
+        spectrumContext.fillRect(
+            rightX,
+            barY,
+            barWidth,
+            barHeight
+        );
+    }
+
+    spectrumContext.globalAlpha = 1;
+
+    spectrumAnimation =
+        requestAnimationFrame(
+            drawSpectrum
+        );
+}
+
+
+/* 停止频谱和唱片 */
+function stopMusicEffects() {
+    spectrumPlaying = false;
+
+    vinylRecord.classList.remove(
+        'playing'
+    );
+
+    if (spectrumAnimation) {
+        cancelAnimationFrame(
+            spectrumAnimation
+        );
+
+        spectrumAnimation = null;
+    }
+
+    spectrumContext.clearRect(
+        0,
+        0,
+        spectrumCanvas.clientWidth,
+        spectrumCanvas.clientHeight
+    );
+}
+
+
+/* 播放音乐 */
+ap.audio.addEventListener(
+    'play',
+    async function () {
+        try {
+            initializeSpectrum();
+
+            /*
+             * 浏览器通常要求用户点击后
+             * 才允许启动 AudioContext
+             */
+            if (
+                audioContext &&
+                audioContext.state ===
+                'suspended'
+            ) {
+                await audioContext.resume();
+            }
+
+            spectrumPlaying = true;
+
+            vinylRecord.classList.add(
+                'playing'
+            );
+
+            if (!spectrumAnimation) {
+                drawSpectrum();
+            }
+        } catch (error) {
+            console.error(
+                '音乐频谱启动失败：',
+                error
+            );
+
+            /*
+             * 即使频谱失败，
+             * 唱片仍然能够旋转
+             */
+            vinylRecord.classList.add(
+                'playing'
+            );
+        }
+    }
+);
+
+/* 暂停音乐 */
+ap.audio.addEventListener(
+    'pause',
+    stopMusicEffects
+);
+
+
+/* 音乐播放结束 */
+ap.audio.addEventListener(
+    'ended',
+    stopMusicEffects
+);
+
+
+/* 音频加载失败时清理视觉效果 */
+ap.audio.addEventListener(
+    'error',
+    function () {
+        stopMusicEffects();
+        console.error(
+            '音乐加载失败，请检查音频格式或文件路径。'
+        );
+    }
+);
+
+
+/* 页面进入后台时暂停频谱绘制，返回后按需恢复 */
+document.addEventListener(
+    'visibilitychange',
+    function () {
+        if (document.hidden) {
+            if (spectrumAnimation) {
+                cancelAnimationFrame(
+                    spectrumAnimation
+                );
+                spectrumAnimation = null;
+            }
+
+            return;
+        }
+
+        if (
+            spectrumPlaying &&
+            !spectrumAnimation
+        ) {
+            drawSpectrum();
+        }
+    }
+);
+}
+</script>
+
+
+<!-- 鼠标点击樱花 -->
+<script>
+
+document.addEventListener('click', function (event) {
+    if (
+        window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+        ).matches
+    ) {
+        return;
+    }
+
+    /* 点击交互控件时不生成樱花 */
+    if (
+        event.target.closest(
+            'a, button, input, select, textarea, .aplayer'
+        )
+    ) {
+        return;
+    }
+
+    const petalCount = 10;
+
+    for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('span');
+
+        petal.className = 'click-sakura';
+        petal.textContent = '🌸';
+
+        petal.style.left = event.clientX + 'px';
+        petal.style.top = event.clientY + 'px';
+
+        const angle =
+            (Math.PI * 2 * i) / petalCount +
+            (Math.random() - 0.5) * 0.6;
+
+        const distance =
+            35 + Math.random() * 55;
+
+        const moveX =
+            Math.cos(angle) * distance;
+
+        const moveY =
+            Math.sin(angle) * distance;
+
+        petal.style.setProperty(
+            '--move-x',
+            moveX + 'px'
+        );
+
+        petal.style.setProperty(
+            '--move-y',
+            moveY + 'px'
+        );
+
+        petal.style.setProperty(
+            '--rotate',
+            (Math.random() * 360 - 180) + 'deg'
+        );
+
+        petal.style.fontSize =
+            (12 + Math.random() * 12) + 'px';
+
+        petal.style.animationDuration =
+            (650 + Math.random() * 400) + 'ms';
+
+        document.body.appendChild(petal);
+
+        petal.addEventListener(
+            'animationend',
+            function () {
+                petal.remove();
+            },
+            { once: true }
+        );
+    }
+});
+</script>
+
+
+<!-- 日间 / 夜间模式 -->
+<script>
+(function () {
+    const themeToggle =
+        document.getElementById('theme-toggle');
+
+    const themeIcon =
+        document.getElementById('theme-icon');
+
+    if (!themeToggle || !themeIcon) {
+        console.error('找不到主题切换按钮。');
+        return;
+    }
+
+    function applyTheme(theme, shouldSave) {
+        const isDayMode =
+            theme === 'day';
+
+        document.body.classList.toggle(
+            'day-mode',
+            isDayMode
+        );
+
+        themeIcon.className =
+            isDayMode
+                ? 'fas fa-moon'
+                : 'fas fa-sun';
+
+        const label =
+            isDayMode
+                ? '切换到夜间模式'
+                : '切换到日间模式';
+
+        themeToggle.setAttribute(
+            'aria-label',
+            label
+        );
+
+        themeToggle.setAttribute(
+            'title',
+            label
+        );
+
+        if (shouldSave) {
+            try {
+                localStorage.setItem(
+                    'miku-theme',
+                    theme
+                );
+            } catch (error) {
+                console.warn(
+                    '主题设置保存失败：',
+                    error
+                );
+            }
+        }
+    }
+
+    let savedTheme = 'night';
+
+    try {
+        const storedTheme =
+            localStorage.getItem('miku-theme');
+
+        if (
+            storedTheme === 'day' ||
+            storedTheme === 'night'
+        ) {
+            savedTheme = storedTheme;
+        }
+    } catch (error) {
+        console.warn(
+            '主题设置读取失败：',
+            error
+        );
+    }
+
+    applyTheme(savedTheme, false);
+
+    themeToggle.addEventListener(
+        'click',
+        function () {
+            const isDayMode =
+                document.body.classList.contains(
+                    'day-mode'
+                );
+
+            applyTheme(
+                isDayMode ? 'night' : 'day',
+                true
+            );
+        }
+    );
+})();
+</script>
+
+<!-- 背景切换功能 -->
+<script>
+(function () {
+    const backgroundElement =
+        document.querySelector('.bg-image');
+
+    const backgroundButton =
+        document.getElementById(
+            'background-toggle'
+        );
+
+    if (
+        !backgroundElement ||
+        !backgroundButton
+    ) {
+        console.error(
+            '找不到背景元素或背景按钮。'
+        );
+
+        return;
+    }
+
+
+    /*
+     * 在这里设置背景图片。
+     *
+     * file：图片路径
+     * name：图片名称
+     * size：显示方式
+     * position：图片位置
+     */
+    const backgrounds = [
+        {
+            file: 'images/miku.jpg',
+            name: '初音未来',
+            size: 'cover',
+            position: 'center center'
+        },
+        {
+            file: 'images/miku-2.jpg',
+            name: '樱花初音',
+            size: 'cover',
+            position: 'center center'
+        },
+        {
+            file: 'images/miku-3.jpg',
+            name: '雪未来',
+            size: 'cover',
+            position: 'center center'
+        }
+    ];
+
+
+    /*
+     * 预加载图片，降低切换时的空白时间。
+     */
+    backgrounds.forEach(function (item) {
+        const image = new Image();
+        image.src = item.file;
+    });
+
+
+    /*
+     * 读取上一次使用的背景。
+     */
+    let currentIndex = 0;
+
+    try {
+        const savedIndex =
+            Number.parseInt(
+                localStorage.getItem(
+                    'miku-background-index'
+                ),
+                10
+            );
+
+        if (
+            Number.isInteger(savedIndex) &&
+            savedIndex >= 0 &&
+            savedIndex < backgrounds.length
+        ) {
+            currentIndex = savedIndex;
+        }
+    } catch (error) {
+        console.warn(
+            '无法读取背景设置：',
+            error
+        );
+    }
+
+
+    /*
+     * 应用背景。
+     */
+    function applyBackground(
+        index,
+        shouldSave
+    ) {
+        const selected =
+            backgrounds[index];
+
+        backgroundElement.style.backgroundImage =
+            'url("' + selected.file + '")';
+
+        backgroundElement.style.backgroundSize =
+            selected.size;
+
+        backgroundElement.style.backgroundPosition =
+            selected.position;
+
+        const label =
+            '切换背景，当前背景：' +
+            selected.name;
+
+        backgroundButton.setAttribute(
+            'aria-label',
+            label
+        );
+
+        backgroundButton.setAttribute(
+            'title',
+            label
+        );
+
+        if (shouldSave) {
+            try {
+                localStorage.setItem(
+                    'miku-background-index',
+                    String(index)
+                );
+            } catch (error) {
+                console.warn(
+                    '无法保存背景设置：',
+                    error
+                );
+            }
+        }
+    }
+
+
+    /*
+     * 刚进入网页时加载保存的背景。
+     */
+    applyBackground(
+        currentIndex,
+        false
+    );
+
+
+    /*
+     * 点击后切换到下一张。
+     */
+    backgroundButton.addEventListener(
+        'click',
+        function () {
+            if (backgroundButton.disabled) {
+                return;
+            }
+
+            backgroundButton.disabled = true;
+
+            currentIndex =
+                (currentIndex + 1) %
+                backgrounds.length;
+
+            backgroundElement.classList.add(
+                'bg-changing'
+            );
+
+            window.setTimeout(
+                function () {
+                    applyBackground(
+                        currentIndex,
+                        true
+                    );
+
+                    window.requestAnimationFrame(
+                        function () {
+                            backgroundElement
+                                .classList.remove(
+                                    'bg-changing'
+                                );
+                        }
+                    );
+
+                    window.setTimeout(
+                        function () {
+                            backgroundButton.disabled =
+                                false;
+                        },
+                        350
+                    );
+                },
+                180
+            );
+        }
+    );
+})();
+</script>
+    
+</body>
+</html>
