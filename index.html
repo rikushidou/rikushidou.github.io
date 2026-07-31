@@ -177,7 +177,6 @@
 
         .social-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
         .social-links a,
-        .social-links .apple-music-launcher,
         .social-links .social-placeholder {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 10px 24px; border-radius: 60px;
@@ -187,25 +186,18 @@
             transition: all 0.3s; letter-spacing: 1px;
         }
         .social-links a i,
-        .social-links .apple-music-launcher i,
         .social-links .social-placeholder i { font-size: 1.2rem; color: #ffb7c5; transition: transform 0.3s; }
-        .social-links .apple-music-launcher {
-            font-family: inherit;
-            cursor: pointer;
-        }
         .social-links .social-placeholder {
             opacity: 0.65;
             cursor: not-allowed;
         }
-        .social-links a:hover,
-        .social-links .apple-music-launcher:hover {
+        .social-links a:hover {
             background: rgba(255, 200, 220, 0.15);
             border-color: #ffb7c5;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 8px 30px rgba(255, 100, 150, 0.15);
         }
-        .social-links a:hover i,
-        .social-links .apple-music-launcher:hover i { transform: scale(1.2) rotate(5deg); }
+        .social-links a:hover i { transform: scale(1.2) rotate(5deg); }
 
         .footer { margin-top: 40px; font-size: 0.7rem; color: rgba(255, 255, 255, 0.30); letter-spacing: 3px; backdrop-filter: blur(4px); padding: 8px 0; }
         .footer i { color: #ffb7c5; margin: 0 4px; }
@@ -234,14 +226,66 @@
         .bio {
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(6px);
-            padding: 18px 24px;
+            padding: 20px 24px;
             border-radius: 20px;
             margin: 20px auto;
-            max-width: 500px;
+            max-width: 560px;
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .bio p { color: #f0e6ff; font-size: 1.1rem; line-height: 1.8; text-align: center; letter-spacing: 2px; }
-        .bio .sub-text { font-size: 0.9rem; color: #ffb7c5; letter-spacing: 3px; }
+        .bio-intro {
+            color: #f0e6ff;
+            font-size: clamp(0.95rem, 2.2vw, 1.08rem);
+            line-height: 1.8;
+            text-align: center;
+            letter-spacing: 1.5px;
+        }
+        .about-launcher {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 9px 18px;
+            border: 1px solid rgba(255, 183, 197, 0.36);
+            border-radius: 999px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 158, 181, 0.18),
+                    rgba(161, 140, 209, 0.18)
+                );
+            color: #ffeaf2;
+            font-family: inherit;
+            font-size: 0.82rem;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 20px rgba(20, 10, 30, 0.16);
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+        .about-launcher:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 183, 197, 0.78);
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 158, 181, 0.30),
+                    rgba(161, 140, 209, 0.28)
+                );
+            box-shadow:
+                0 9px 26px rgba(20, 10, 30, 0.22),
+                0 0 18px rgba(255, 158, 181, 0.12);
+        }
+        .about-launcher:active {
+            transform: translateY(0) scale(0.97);
+        }
+        .about-launcher:focus-visible,
+        .about-close:focus-visible {
+            outline: 2px solid #ffb7c5;
+            outline-offset: 3px;
+        }
 
         /* 樱花 Canvas */
         #sakura-canvas {
@@ -262,10 +306,15 @@
         @media (max-width: 480px) {
             .username { letter-spacing: 3px; }
             .subtitle { letter-spacing: 4px; font-size: 0.9rem; padding: 4px 16px; }
-            .social-links a,
-            .social-links .apple-music-launcher { padding: 6px 14px; font-size: 0.75rem; }
+            .social-links a { padding: 6px 14px; font-size: 0.75rem; }
             .social-links .social-placeholder { padding: 6px 14px; font-size: 0.75rem; }
             .tag { font-size: 0.7rem; padding: 4px 12px; }
+            .bio {
+                padding: 17px 18px;
+            }
+            .bio-intro {
+                letter-spacing: 1px;
+            }
             .main-content {
                 padding-bottom: max(92px, calc(env(safe-area-inset-bottom) + 72px));
             }
@@ -573,8 +622,30 @@ body.day-mode .bio {
 }
 
 body.day-mode .subtitle,
-body.day-mode .bio p {
+body.day-mode .bio-intro {
     color: #503d60;
+}
+
+body.day-mode .about-launcher {
+    border-color: rgba(115, 80, 145, 0.28);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 219, 231, 0.80),
+            rgba(226, 218, 249, 0.78)
+        );
+    color: #654e7c;
+    box-shadow: 0 6px 20px rgba(95, 70, 125, 0.12);
+}
+
+body.day-mode .about-launcher:hover {
+    border-color: rgba(115, 80, 145, 0.48);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 226, 236, 0.96),
+            rgba(232, 224, 252, 0.94)
+        );
 }
 
 body.day-mode .clock-label {
@@ -593,12 +664,6 @@ body.day-mode .social-links a {
         rgba(115, 80, 145, 0.20);
 }
 
-body.day-mode .social-links .apple-music-launcher {
-    color: #503d60;
-    background: rgba(255, 255, 255, 0.64);
-    border-color: rgba(115, 80, 145, 0.20);
-}
-
 body.day-mode .social-links .social-placeholder {
     color: #503d60;
 
@@ -613,12 +678,6 @@ body.day-mode .social-links a:hover {
     background:
         rgba(255, 230, 243, 0.86);
 }
-
-body.day-mode .social-links .apple-music-launcher:hover {
-    background:
-        rgba(255, 230, 243, 0.86);
-}
-
 
 /* 日间页脚 */
 body.day-mode .footer {
@@ -742,12 +801,12 @@ body.day-mode .background-toggle {
     }
 }
 
-/* ===== Apple Music 在线播放器 ===== */
-body.apple-music-open {
+/* ===== 关于我弹窗 ===== */
+body.about-open {
     overflow: hidden;
 }
 
-.apple-music-modal {
+.about-modal {
     position: fixed;
     inset: 0;
     z-index: 11000;
@@ -762,147 +821,187 @@ body.apple-music-open {
     backdrop-filter: blur(14px);
 }
 
-.apple-music-modal[hidden] {
+.about-modal[hidden] {
     display: none;
 }
 
-.apple-music-panel {
-    width: min(620px, 100%);
+.about-panel {
+    position: relative;
+    width: min(600px, 100%);
     max-height: min(720px, 100%);
-    overflow-y: auto;
-    padding: 22px;
+    overflow: hidden auto;
+    padding: 28px;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 24px;
+    border-radius: 28px;
     background:
+        radial-gradient(
+            circle at 82% 4%,
+            rgba(255, 158, 181, 0.16),
+            transparent 34%
+        ),
         linear-gradient(
             145deg,
-            rgba(34, 25, 43, 0.96),
-            rgba(13, 11, 18, 0.96)
+            rgba(34, 25, 43, 0.97),
+            rgba(13, 11, 18, 0.97)
         );
     box-shadow:
-        0 24px 80px rgba(0, 0, 0, 0.48),
+        0 24px 80px rgba(0, 0, 0, 0.50),
         0 0 45px rgba(255, 158, 181, 0.14);
     color: #f9f5ff;
+    animation: aboutPanelIn 0.34s ease-out both;
 }
 
-.apple-music-header {
+.about-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 28px;
+    width: 86px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff9eb5, #a18cd1);
+    box-shadow: 0 0 14px rgba(255, 158, 181, 0.62);
+}
+
+.about-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 18px;
+    gap: 18px;
+    margin-bottom: 24px;
 }
 
-.apple-music-heading {
+.about-heading {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 1.12rem;
-    letter-spacing: 1px;
+    font-size: clamp(1.28rem, 4vw, 1.62rem);
+    letter-spacing: 2px;
 }
 
-.apple-music-heading i {
-    color: #ff9eb5;
-    font-size: 1.35rem;
+.about-heading i {
+    color: #ffb7c5;
+    font-size: 0.95em;
+    filter: drop-shadow(0 0 9px rgba(255, 183, 197, 0.42));
 }
 
-.apple-music-close {
-    width: 38px;
-    height: 38px;
+.about-close {
+    width: 40px;
+    height: 40px;
     flex: 0 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.07);
     color: #ffffff;
-    font-size: 1rem;
-}
-
-.apple-music-tracks {
-    display: grid;
-    gap: 9px;
-    margin-bottom: 16px;
-}
-
-.apple-music-track {
-    width: 100%;
-    padding: 10px 13px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.78);
     font-family: inherit;
-    font-size: 0.82rem;
-    line-height: 1.45;
-    text-align: left;
+    font-size: 1rem;
     transition:
+        transform 0.25s ease,
         background 0.25s ease,
-        border-color 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease;
+        border-color 0.25s ease;
 }
 
-.apple-music-track:hover,
-.apple-music-track[aria-pressed="true"] {
-    border-color: rgba(255, 158, 181, 0.72);
-    background: rgba(255, 158, 181, 0.13);
+.about-close:hover {
+    transform: rotate(8deg);
+    border-color: rgba(255, 183, 197, 0.56);
+    background: rgba(255, 183, 197, 0.14);
+}
+
+.about-copy {
+    display: grid;
+    gap: 14px;
+    text-align: left;
+}
+
+.about-copy p {
+    color: rgba(249, 245, 255, 0.84);
+    font-size: clamp(0.94rem, 2.4vw, 1.04rem);
+    line-height: 1.95;
+    letter-spacing: 0.7px;
+}
+
+.about-copy p:first-child {
     color: #ffffff;
-    transform: translateX(3px);
+    font-size: clamp(1rem, 2.7vw, 1.1rem);
 }
 
-.apple-music-frame-shell {
-    min-height: 175px;
-    overflow: hidden;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.06);
+body.day-mode .about-modal {
+    background: rgba(56, 42, 72, 0.42);
 }
 
-.apple-music-frame {
-    display: block;
-    width: 100%;
-    height: 175px;
-    border: 0;
-    background: transparent;
+body.day-mode .about-panel {
+    border-color: rgba(115, 80, 145, 0.22);
+    background:
+        radial-gradient(
+            circle at 82% 4%,
+            rgba(255, 177, 204, 0.30),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.97),
+            rgba(246, 239, 252, 0.97)
+        );
+    box-shadow:
+        0 24px 80px rgba(72, 50, 92, 0.24),
+        0 0 45px rgba(255, 158, 181, 0.16);
+    color: #503d60;
 }
 
-.apple-music-status {
-    padding: 10px 4px 0;
-    color: rgba(255, 255, 255, 0.52);
-    font-size: 0.72rem;
-    line-height: 1.5;
+body.day-mode .about-heading,
+body.day-mode .about-copy p:first-child {
+    color: #503d60;
 }
 
-.apple-music-external {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    margin-top: 14px;
-    color: #ffb7c5;
-    font-size: 0.78rem;
-    text-decoration: none;
+body.day-mode .about-copy p {
+    color: rgba(80, 61, 96, 0.82);
 }
 
-.apple-music-external:hover {
-    color: #ffffff;
+body.day-mode .about-close {
+    border-color: rgba(115, 80, 145, 0.20);
+    background: rgba(115, 80, 145, 0.07);
+    color: #654e7c;
+}
+
+@keyframes aboutPanelIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media (max-width: 520px) {
-    .apple-music-modal {
+    .about-modal {
         align-items: end;
         padding: 0;
     }
 
-    .apple-music-panel {
+    .about-panel {
         width: 100%;
         max-height: min(82dvh, 720px);
         padding:
-            18px
-            max(16px, env(safe-area-inset-right))
-            max(18px, env(safe-area-inset-bottom))
-            max(16px, env(safe-area-inset-left));
+            24px
+            max(20px, env(safe-area-inset-right))
+            max(24px, env(safe-area-inset-bottom))
+            max(20px, env(safe-area-inset-left));
         border-right: 0;
         border-bottom: 0;
         border-left: 0;
-        border-radius: 24px 24px 0 0;
+        border-radius: 26px 26px 0 0;
+    }
+
+    .about-panel::before {
+        left: 50%;
+        width: 58px;
+        transform: translateX(-50%);
+    }
+
+    .about-header {
+        margin-bottom: 19px;
     }
 }
 
@@ -1006,12 +1105,21 @@ body.apple-music-open {
             <div class="clock-label">🎵 此刻 · 二次元时间 🎵</div>
         </div>
 
-        <!-- BIO 卡片（方案一完整标语） -->
+        <!-- 简短自我介绍 -->
         <div class="bio">
-            <p>
-                🎵 与世界的第一声共鸣 🎵<br>
-                <span class="sub-text">The First Sound from the Future</span>
+            <p class="bio-intro">
+                在代码与音乐之间，搭建属于自己的小世界。
             </p>
+            <button
+                class="about-launcher"
+                id="about-toggle"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="about-modal"
+                aria-expanded="false"
+            >
+                了解 rikushidou →
+            </button>
         </div>
 
         <!-- 社交链接 -->
@@ -1020,17 +1128,6 @@ body.apple-music-open {
             <a href="https://x.com/rikushidou" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a>
             <span class="social-placeholder" title="B站链接待补充" aria-label="B站链接待补充"><i class="fab fa-bilibili"></i> B站（待补充）</span>
             <a href="mailto:691097606@qq.com"><i class="fas fa-envelope"></i> 691097606@qq.com</a>
-            <button
-                class="apple-music-launcher"
-                id="apple-music-toggle"
-                type="button"
-                aria-haspopup="dialog"
-                aria-controls="apple-music-modal"
-                aria-expanded="false"
-            >
-                <i class="fab fa-apple"></i>
-                Apple Music
-            </button>
         </div>
 
         <div class="footer">
@@ -1039,100 +1136,178 @@ body.apple-music-open {
     </div>
 
     <div
-        class="apple-music-modal"
-        id="apple-music-modal"
+        class="about-modal"
+        id="about-modal"
         hidden
     >
         <section
-            class="apple-music-panel"
-            id="apple-music-panel"
+            class="about-panel"
+            id="about-panel"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="apple-music-title"
+            aria-labelledby="about-title"
             tabindex="-1"
         >
-            <div class="apple-music-header">
+            <div class="about-header">
                 <h2
-                    class="apple-music-heading"
-                    id="apple-music-title"
+                    class="about-heading"
+                    id="about-title"
                 >
-                    <i class="fab fa-apple"></i>
-                    Apple Music 在线歌曲
+                    <i class="fas fa-star" aria-hidden="true"></i>
+                    关于我
                 </h2>
 
                 <button
-                    class="apple-music-close"
-                    id="apple-music-close"
+                    class="about-close"
+                    id="about-close"
                     type="button"
-                    aria-label="关闭 Apple Music 播放器"
-                    title="关闭 Apple Music 播放器"
+                    aria-label="关闭关于我"
+                    title="关闭"
                 >
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 
-            <div
-                class="apple-music-tracks"
-                aria-label="选择 Apple Music 歌曲"
-            >
-                <button
-                    class="apple-music-track"
-                    type="button"
-                    data-apple-track-index="0"
-                    aria-pressed="true"
-                >
-                    01 · ワールドイズマイン（世界第一公主殿下）
-                </button>
-                <button
-                    class="apple-music-track"
-                    type="button"
-                    data-apple-track-index="1"
-                    aria-pressed="false"
-                >
-                    02 · Liar
-                </button>
-                <button
-                    class="apple-music-track"
-                    type="button"
-                    data-apple-track-index="2"
-                    aria-pressed="false"
-                >
-                    03 · The Old Man and the Sea
-                </button>
+            <div class="about-copy">
+                <p>
+                    我是 rikushidou，一名喜欢技术与 ACG 文化的探索者。
+                </p>
+                <p>
+                    我享受把想法变成作品的过程，也喜欢音乐、初音未来，以及一切富有想象力的事物。这个网站是我的数字房间，记录兴趣，也承载我不断尝试的新东西。
+                </p>
             </div>
-
-            <div class="apple-music-frame-shell">
-                <iframe
-                    class="apple-music-frame"
-                    id="apple-music-frame"
-                    title="Apple Music：ワールドイズマイン"
-                    loading="lazy"
-                    allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                ></iframe>
-            </div>
-
-            <p
-                class="apple-music-status"
-                id="apple-music-status"
-                role="status"
-            >
-                打开后将暂停本地播放器；播放能力取决于地区、登录状态和订阅。
-            </p>
-
-            <a
-                class="apple-music-external"
-                id="apple-music-external"
-                href="https://music.apple.com/cn/album/1879868098?i=1879868099"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                <i class="fas fa-external-link-alt"></i>
-                在 Apple Music 中打开
-            </a>
         </section>
     </div>
+
+    <script>
+    (function () {
+        const aboutToggle =
+            document.getElementById('about-toggle');
+        const aboutModal =
+            document.getElementById('about-modal');
+        const aboutPanel =
+            document.getElementById('about-panel');
+        const aboutClose =
+            document.getElementById('about-close');
+
+        if (
+            !aboutToggle ||
+            !aboutModal ||
+            !aboutPanel ||
+            !aboutClose
+        ) {
+            console.error('关于我弹窗结构不完整。');
+            return;
+        }
+
+        let lastFocusedElement = null;
+
+        function openAbout() {
+            lastFocusedElement = document.activeElement;
+            aboutModal.hidden = false;
+            document.body.classList.add('about-open');
+            aboutToggle.setAttribute(
+                'aria-expanded',
+                'true'
+            );
+
+            window.requestAnimationFrame(function () {
+                aboutClose.focus();
+            });
+        }
+
+        function closeAbout() {
+            aboutModal.hidden = true;
+            document.body.classList.remove('about-open');
+            aboutToggle.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+            if (
+                lastFocusedElement &&
+                typeof lastFocusedElement.focus ===
+                    'function'
+            ) {
+                lastFocusedElement.focus();
+            } else {
+                aboutToggle.focus();
+            }
+        }
+
+        aboutToggle.addEventListener(
+            'click',
+            openAbout
+        );
+        aboutClose.addEventListener(
+            'click',
+            closeAbout
+        );
+
+        aboutModal.addEventListener(
+            'click',
+            function (event) {
+                if (event.target === aboutModal) {
+                    closeAbout();
+                }
+            }
+        );
+
+        document.addEventListener(
+            'keydown',
+            function (event) {
+                if (aboutModal.hidden) {
+                    return;
+                }
+
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    closeAbout();
+                    return;
+                }
+
+                if (event.key !== 'Tab') {
+                    return;
+                }
+
+                const focusableElements = Array.from(
+                    aboutPanel.querySelectorAll(
+                        'button:not([disabled]), a[href]'
+                    )
+                );
+
+                if (focusableElements.length === 0) {
+                    event.preventDefault();
+                    aboutPanel.focus();
+                    return;
+                }
+
+                const firstFocusable =
+                    focusableElements[0];
+                const lastFocusable =
+                    focusableElements[
+                        focusableElements.length - 1
+                    ];
+
+                if (
+                    event.shiftKey &&
+                    document.activeElement ===
+                        firstFocusable
+                ) {
+                    event.preventDefault();
+                    lastFocusable.focus();
+                } else if (
+                    !event.shiftKey &&
+                    document.activeElement ===
+                        lastFocusable
+                ) {
+                    event.preventDefault();
+                    firstFocusable.focus();
+                }
+            }
+        );
+    })();
+    </script>
 
     <script>
         (function() {
@@ -1454,241 +1629,6 @@ document.addEventListener(
     handlePageVisibilityChange
 );
 updatePageTitle();
-
-const appleMusicTracks = [
-    {
-        title: 'ワールドイズマイン（世界第一公主殿下）',
-        url: 'https://music.apple.com/cn/album/%E3%83%AF%E3%83%BC%E3%83%AB%E3%83%89%E3%82%A4%E3%82%BA%E3%83%9E%E3%82%A4%E3%83%B3-%E4%B8%96%E7%95%8C%E7%AC%AC%E4%B8%80%E5%85%AC%E4%B8%BB%E6%AE%BF%E4%B8%8B-%E8%B6%85%E6%97%B6%E7%A9%BA%E8%BE%89%E5%A4%9C%E5%A7%AC-%E5%89%A7%E4%B8%AD%E6%9B%B2-%E9%92%A2%E7%90%B4%E7%BC%96%E6%9B%B2/1879868098?i=1879868099'
-    },
-    {
-        title: 'Liar',
-        url: 'https://music.apple.com/cn/album/liar/1546186120?i=1546186126'
-    },
-    {
-        title: 'The Old Man and the Sea',
-        url: 'https://music.apple.com/cn/album/the-old-man-and-the-sea/1674467767?i=1674467772'
-    }
-];
-
-function initializeAppleMusicPlayer() {
-    const toggle =
-        document.getElementById('apple-music-toggle');
-    const modal =
-        document.getElementById('apple-music-modal');
-    const panel =
-        document.getElementById('apple-music-panel');
-    const closeButton =
-        document.getElementById('apple-music-close');
-    const frame =
-        document.getElementById('apple-music-frame');
-    const status =
-        document.getElementById('apple-music-status');
-    const externalLink =
-        document.getElementById('apple-music-external');
-    const trackButtons = Array.from(
-        document.querySelectorAll(
-            '[data-apple-track-index]'
-        )
-    );
-
-    if (
-        !toggle ||
-        !modal ||
-        !panel ||
-        !closeButton ||
-        !frame ||
-        !status ||
-        !externalLink ||
-        trackButtons.length !== appleMusicTracks.length
-    ) {
-        console.error('Apple Music 播放器结构不完整。');
-        return;
-    }
-
-    let selectedIndex = 0;
-    let lastFocusedElement = null;
-
-    function getEmbedUrl(track) {
-        return track.url.replace(
-            'https://music.apple.com',
-            'https://embed.music.apple.com'
-        );
-    }
-
-    function selectTrack(index, shouldLoad) {
-        const track = appleMusicTracks[index];
-
-        if (!track) {
-            return;
-        }
-
-        selectedIndex = index;
-
-        trackButtons.forEach(function (button) {
-            button.setAttribute(
-                'aria-pressed',
-                String(
-                    Number.parseInt(
-                        button.dataset.appleTrackIndex,
-                        10
-                    ) === selectedIndex
-                )
-            );
-        });
-
-        frame.title =
-            'Apple Music：' + track.title;
-        externalLink.href = track.url;
-
-        if (shouldLoad) {
-            status.textContent =
-                '正在加载 Apple Music：' +
-                track.title;
-            frame.src = getEmbedUrl(track);
-        }
-    }
-
-    function pauseLocalPlayer() {
-        const localAudio =
-            document.querySelector('#aplayer audio');
-
-        if (localAudio && !localAudio.paused) {
-            localAudio.pause();
-        }
-    }
-
-    function openAppleMusic() {
-        pauseLocalPlayer();
-        lastFocusedElement = document.activeElement;
-
-        modal.hidden = false;
-        document.body.classList.add(
-            'apple-music-open'
-        );
-        toggle.setAttribute('aria-expanded', 'true');
-        selectTrack(selectedIndex, true);
-
-        window.requestAnimationFrame(function () {
-            closeButton.focus();
-        });
-    }
-
-    function closeAppleMusic() {
-        modal.hidden = true;
-        document.body.classList.remove(
-            'apple-music-open'
-        );
-        toggle.setAttribute('aria-expanded', 'false');
-        frame.removeAttribute('src');
-        status.textContent =
-            '播放器已关闭；再次打开时才会重新加载。';
-
-        if (
-            lastFocusedElement &&
-            typeof lastFocusedElement.focus ===
-                'function'
-        ) {
-            lastFocusedElement.focus();
-        } else {
-            toggle.focus();
-        }
-    }
-
-    toggle.addEventListener(
-        'click',
-        openAppleMusic
-    );
-    closeButton.addEventListener(
-        'click',
-        closeAppleMusic
-    );
-
-    modal.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            closeAppleMusic();
-        }
-    });
-
-    document.addEventListener(
-        'keydown',
-        function (event) {
-            if (modal.hidden) {
-                return;
-            }
-
-            if (event.key === 'Escape') {
-                closeAppleMusic();
-                return;
-            }
-
-            if (event.key !== 'Tab') {
-                return;
-            }
-
-            const focusableElements = Array.from(
-                panel.querySelectorAll(
-                    'button:not([disabled]), ' +
-                    'a[href], iframe'
-                )
-            );
-
-            if (focusableElements.length === 0) {
-                event.preventDefault();
-                panel.focus();
-                return;
-            }
-
-            const firstFocusable =
-                focusableElements[0];
-            const lastFocusable =
-                focusableElements[
-                    focusableElements.length - 1
-                ];
-
-            if (
-                event.shiftKey &&
-                document.activeElement ===
-                    firstFocusable
-            ) {
-                event.preventDefault();
-                lastFocusable.focus();
-            } else if (
-                !event.shiftKey &&
-                document.activeElement ===
-                    lastFocusable
-            ) {
-                event.preventDefault();
-                firstFocusable.focus();
-            }
-        }
-    );
-
-    trackButtons.forEach(function (button) {
-        button.addEventListener(
-            'click',
-            function () {
-                selectTrack(
-                    Number.parseInt(
-                        button.dataset.appleTrackIndex,
-                        10
-                    ),
-                    true
-                );
-            }
-        );
-    });
-
-    frame.addEventListener('load', function () {
-        if (frame.hasAttribute('src')) {
-            status.textContent =
-                'Apple Music 已加载。';
-        }
-    });
-
-    selectTrack(selectedIndex, false);
-}
-
-initializeAppleMusicPlayer();
 
 function showNativeAudioFallback(message, error) {
     if (error) {
