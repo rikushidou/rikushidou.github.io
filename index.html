@@ -13,10 +13,13 @@
 
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css"
+        href="vendor/aplayer/APlayer.min.css"
     >
 
-    <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    <script
+        src="vendor/aplayer/APlayer.min.js"
+        defer
+    ></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +51,11 @@
             z-index: 0;
             /* 替换为您的初音图片 */
             background-image: url('images/miku.jpg');
+            background-image: image-set(
+                url('images/miku.avif') type('image/avif'),
+                url('images/miku.webp') type('image/webp'),
+                url('images/miku.jpg') type('image/jpeg')
+            );
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -200,8 +208,20 @@
             bottom: calc(12px + env(safe-area-inset-bottom));
             z-index: 10001;
             width: min(360px, calc(100vw - 24px));
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            background: rgba(11, 10, 12, 0.82);
+            backdrop-filter: blur(10px);
+        }
+        .audio-fallback-message {
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 0.78rem;
+            line-height: 1.4;
         }
         .audio-fallback audio { display: block; width: 100%; }
+        .music-visualizer[hidden] { display: none; }
 
         .bio {
             background: rgba(0,0,0,0.3);
@@ -717,6 +737,41 @@ body.day-mode .background-toggle {
         display: none;
     }
 }
+
+/* 初音未来霓虹鼠标指针，仅在鼠标等精确指针设备上启用 */
+@media (pointer: fine) {
+    html,
+    body {
+        cursor:
+            url('cursor/miku-default.svg') 3 3,
+            auto;
+    }
+
+    a,
+    button,
+    [role="button"],
+    .aplayer,
+    .aplayer * {
+        cursor:
+            url('cursor/miku-pointer.svg') 3 3,
+            pointer;
+    }
+
+    input,
+    textarea,
+    [contenteditable="true"] {
+        cursor: text;
+    }
+
+    .social-placeholder,
+    button:disabled {
+        cursor: not-allowed;
+    }
+
+    audio {
+        cursor: auto;
+    }
+}
         
     </style>
 </head>
@@ -780,7 +835,7 @@ body.day-mode .background-toggle {
             <a href="https://github.com/rikushidou" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
             <a href="https://x.com/rikushidou" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a>
             <span class="social-placeholder" title="B站链接待补充" aria-label="B站链接待补充"><i class="fab fa-bilibili"></i> B站（待补充）</span>
-            <a href="mailto:691097606lst@gmail.com"><i class="fas fa-envelope"></i> 邮箱</a>
+            <a href="mailto:691097606@qq.com"><i class="fas fa-envelope"></i> 691097606@qq.com</a>
         </div>
 
         <div class="footer">
@@ -998,28 +1053,135 @@ body.day-mode .background-toggle {
     <canvas id="spectrum-canvas"></canvas>
 
     <div class="vinyl-record" id="vinyl-record">
-        <img
-            class="vinyl-cover"
-            src="images/miku.jpg"
-            alt=""
-        >
+        <picture>
+            <source
+                srcset="images/miku.avif"
+                type="image/avif"
+            >
+            <source
+                srcset="images/miku.webp"
+                type="image/webp"
+            >
+            <img
+                class="vinyl-cover"
+                src="images/miku.jpg"
+                alt=""
+            >
+        </picture>
     </div>
 </div>
     
 <div id="aplayer"></div>
 
 <script>
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
 /* ===== APlayer 音乐播放器 ===== */
 
 const aplayerContainer =
     document.getElementById('aplayer');
 
-if (typeof window.APlayer !== 'function') {
-    console.error(
-        'APlayer 加载失败，已切换到浏览器原生播放器。'
-    );
+if (!aplayerContainer) {
+    console.error('找不到播放器容器。');
+    return;
+}
 
+const defaultPageTitle = document.title;
+const hiddenPageTitle = '🎵 初音未来等你回来';
+const welcomePageTitle =
+    '🌸 欢迎回来 · 未来一直都在';
+const playingPageTitle = '▶ 千本樱 · Oturans';
+
+let titleAudioPlaying = false;
+let welcomeTitleActive = false;
+let welcomeTitleTimer = null;
+
+function updatePageTitle() {
+    if (document.hidden) {
+        document.title = hiddenPageTitle;
+        return;
+    }
+
+    if (welcomeTitleActive) {
+        document.title = welcomePageTitle;
+        return;
+    }
+
+    document.title = titleAudioPlaying
+        ? playingPageTitle
+        : defaultPageTitle;
+}
+
+function handlePageVisibilityChange() {
+    if (welcomeTitleTimer !== null) {
+        window.clearTimeout(welcomeTitleTimer);
+        welcomeTitleTimer = null;
+    }
+
+    if (document.hidden) {
+        welcomeTitleActive = false;
+        updatePageTitle();
+        return;
+    }
+
+    welcomeTitleActive = true;
+    updatePageTitle();
+
+    welcomeTitleTimer = window.setTimeout(
+        function () {
+            welcomeTitleTimer = null;
+            welcomeTitleActive = false;
+            updatePageTitle();
+        },
+        2500
+    );
+}
+
+function bindPageTitleToAudio(audio) {
+    if (!audio) {
+        return;
+    }
+
+    audio.addEventListener('play', function () {
+        titleAudioPlaying = true;
+        updatePageTitle();
+    });
+
+    function handleAudioStopped() {
+        titleAudioPlaying = false;
+        updatePageTitle();
+    }
+
+    audio.addEventListener('pause', handleAudioStopped);
+    audio.addEventListener('ended', handleAudioStopped);
+    audio.addEventListener('error', handleAudioStopped);
+}
+
+document.addEventListener(
+    'visibilitychange',
+    handlePageVisibilityChange
+);
+updatePageTitle();
+
+function showNativeAudioFallback(message, error) {
+    if (error) {
+        console.error(message, error);
+    } else {
+        console.error(message);
+    }
+
+    aplayerContainer.replaceChildren();
     aplayerContainer.className = 'audio-fallback';
+
+    const fallbackMessage =
+        document.createElement('p');
+
+    fallbackMessage.className =
+        'audio-fallback-message';
+    fallbackMessage.setAttribute('role', 'status');
+    fallbackMessage.textContent =
+        '增强播放器暂不可用，已切换到浏览器播放器。';
 
     const fallbackAudio =
         document.createElement('audio');
@@ -1027,7 +1189,25 @@ if (typeof window.APlayer !== 'function') {
     fallbackAudio.controls = true;
     fallbackAudio.preload = 'metadata';
     fallbackAudio.src = 'music/senbonzakura.ogg';
+    fallbackAudio.setAttribute(
+        'aria-label',
+        '千本樱（钢琴版）'
+    );
+    bindPageTitleToAudio(fallbackAudio);
 
+    fallbackAudio.addEventListener(
+        'error',
+        function () {
+            fallbackMessage.textContent =
+                '音乐加载失败，请稍后重试。';
+            console.error(
+                '原生播放器无法加载音乐文件。'
+            );
+        },
+        { once: true }
+    );
+
+    aplayerContainer.appendChild(fallbackMessage);
     aplayerContainer.appendChild(fallbackAudio);
 
     const musicVisualizer =
@@ -1036,8 +1216,19 @@ if (typeof window.APlayer !== 'function') {
     if (musicVisualizer) {
         musicVisualizer.hidden = true;
     }
-} else {
-const ap = new window.APlayer({
+}
+
+if (typeof window.APlayer !== 'function') {
+    showNativeAudioFallback(
+        'APlayer 加载失败，已切换到浏览器原生播放器。'
+    );
+    return;
+}
+
+let ap;
+
+try {
+    ap = new window.APlayer({
     container: aplayerContainer,
 
     fixed: true,
@@ -1053,10 +1244,19 @@ const ap = new window.APlayer({
             url: 'music/senbonzakura.ogg',
 
             /* 使用已经存在的初音图片 */
-            cover: 'images/miku.jpg'
+            cover: 'images/miku.webp'
         }
     ]
-});
+    });
+} catch (error) {
+    showNativeAudioFallback(
+        'APlayer 初始化失败，已切换到浏览器原生播放器。',
+        error
+    );
+    return;
+}
+
+bindPageTitleToAudio(ap.audio);
 
 
 /* ===== 真实音乐频谱 ===== */
@@ -1475,7 +1675,8 @@ document.addEventListener(
         }
     }
 );
-}
+    }
+);
 </script>
 
 
@@ -1681,26 +1882,34 @@ document.addEventListener('click', function (event) {
     /*
      * 在这里设置背景图片。
      *
-     * file：图片路径
+     * avif：AVIF 图片路径
+     * webp：WebP 图片路径
+     * fallback：JPG 兼容图片路径
      * name：图片名称
      * size：显示方式
      * position：图片位置
      */
     const backgrounds = [
         {
-            file: 'images/miku.jpg',
+            avif: 'images/miku.avif',
+            webp: 'images/miku.webp',
+            fallback: 'images/miku.jpg',
             name: '初音未来',
             size: 'cover',
             position: 'center center'
         },
         {
-            file: 'images/miku-2.jpg',
+            avif: 'images/miku-2.avif',
+            webp: 'images/miku-2.webp',
+            fallback: 'images/miku-2.jpg',
             name: '樱花初音',
             size: 'cover',
             position: 'center center'
         },
         {
-            file: 'images/miku-3.jpg',
+            avif: 'images/miku-3.avif',
+            webp: 'images/miku-3.webp',
+            fallback: 'images/miku-3.jpg',
             name: '雪未来',
             size: 'cover',
             position: 'center center'
@@ -1709,12 +1918,48 @@ document.addEventListener('click', function (event) {
 
 
     /*
-     * 预加载图片，降低切换时的空白时间。
+     * 只预加载下一张背景。
+     * picture 会让浏览器自动选择 AVIF、WebP 或 JPG。
      */
-    backgrounds.forEach(function (item) {
+    let backgroundPreloader = null;
+
+    function preloadBackground(index) {
+        if (backgroundPreloader) {
+            backgroundPreloader.remove();
+        }
+
+        const selected = backgrounds[index];
+        const picture = document.createElement('picture');
+        const avifSource = document.createElement('source');
+        const webpSource = document.createElement('source');
         const image = new Image();
-        image.src = item.file;
-    });
+
+        picture.hidden = true;
+        picture.setAttribute('aria-hidden', 'true');
+
+        avifSource.type = 'image/avif';
+        avifSource.srcset = selected.avif;
+
+        webpSource.type = 'image/webp';
+        webpSource.srcset = selected.webp;
+
+        image.alt = '';
+        image.decoding = 'async';
+        image.src = selected.fallback;
+
+        picture.appendChild(avifSource);
+        picture.appendChild(webpSource);
+        picture.appendChild(image);
+        document.body.appendChild(picture);
+
+        backgroundPreloader = picture;
+    }
+
+    function preloadNextBackground() {
+        preloadBackground(
+            (currentIndex + 1) % backgrounds.length
+        );
+    }
 
 
     /*
@@ -1756,8 +2001,28 @@ document.addEventListener('click', function (event) {
         const selected =
             backgrounds[index];
 
+        const imageSet =
+            'image-set(' +
+            'url("' + selected.avif + '") ' +
+            'type("image/avif"), ' +
+            'url("' + selected.webp + '") ' +
+            'type("image/webp"), ' +
+            'url("' + selected.fallback + '") ' +
+            'type("image/jpeg"))';
+
         backgroundElement.style.backgroundImage =
-            'url("' + selected.file + '")';
+            'url("' + selected.fallback + '")';
+
+        if (
+            window.CSS &&
+            CSS.supports(
+                'background-image',
+                imageSet
+            )
+        ) {
+            backgroundElement.style.backgroundImage =
+                imageSet;
+        }
 
         backgroundElement.style.backgroundSize =
             selected.size;
@@ -1802,6 +2067,7 @@ document.addEventListener('click', function (event) {
         currentIndex,
         false
     );
+    preloadNextBackground();
 
 
     /*
@@ -1830,6 +2096,7 @@ document.addEventListener('click', function (event) {
                         currentIndex,
                         true
                     );
+                    preloadNextBackground();
 
                     window.requestAnimationFrame(
                         function () {

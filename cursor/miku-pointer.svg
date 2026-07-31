@@ -1,0 +1,61 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+>
+    <defs>
+        <linearGradient
+            id="pointer-gradient"
+            x1="4"
+            y1="3"
+            x2="23"
+            y2="27"
+            gradientUnits="userSpaceOnUse"
+        >
+            <stop stop-color="#ffd4e2"/>
+            <stop offset="0.5" stop-color="#ff9eb5"/>
+            <stop offset="1" stop-color="#a18cd1"/>
+        </linearGradient>
+        <filter
+            id="pointer-glow"
+            x="-35%"
+            y="-35%"
+            width="170%"
+            height="170%"
+        >
+            <feGaussianBlur
+                stdDeviation="1.35"
+                result="blur"
+            />
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <path
+        d="M3 2.5 26 13.4 15.7 16.4 21.4 26.2 16.7 28.8 11 18.6 4.7 26.4Z"
+        fill="url(#pointer-gradient)"
+        stroke="#ffffff"
+        stroke-width="1.35"
+        stroke-linejoin="round"
+        filter="url(#pointer-glow)"
+    />
+    <path
+        d="M6.2 6.2 20.5 13.1 13.1 15.2 17.2 22.4"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="0.9"
+        stroke-linecap="round"
+        opacity="0.78"
+    />
+    <path
+        d="M24.2 3.2v8.1a2.8 2.8 0 1 1-1.4-2.4V5.2l5.2-1.3v5.8a2.8 2.8 0 1 1-1.4-2.4V3.5Z"
+        fill="#39c5bb"
+        stroke="#ffffff"
+        stroke-width="0.65"
+        stroke-linejoin="round"
+    />
+</svg>

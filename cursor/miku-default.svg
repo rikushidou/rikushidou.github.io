@@ -1,0 +1,60 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+>
+    <defs>
+        <linearGradient
+            id="miku-gradient"
+            x1="4"
+            y1="3"
+            x2="23"
+            y2="27"
+            gradientUnits="userSpaceOnUse"
+        >
+            <stop stop-color="#b9fff8"/>
+            <stop offset="0.48" stop-color="#39c5bb"/>
+            <stop offset="1" stop-color="#a18cd1"/>
+        </linearGradient>
+        <filter
+            id="miku-glow"
+            x="-35%"
+            y="-35%"
+            width="170%"
+            height="170%"
+        >
+            <feGaussianBlur
+                stdDeviation="1.25"
+                result="blur"
+            />
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <path
+        d="M3 2.5 26 13.4 15.7 16.4 21.4 26.2 16.7 28.8 11 18.6 4.7 26.4Z"
+        fill="url(#miku-gradient)"
+        stroke="#f9f5ff"
+        stroke-width="1.35"
+        stroke-linejoin="round"
+        filter="url(#miku-glow)"
+    />
+    <path
+        d="M6.2 6.2 20.5 13.1 13.1 15.2 17.2 22.4"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="0.9"
+        stroke-linecap="round"
+        opacity="0.72"
+    />
+    <path
+        d="m24.2 3.2.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8Z"
+        fill="#ff9eb5"
+        stroke="#ffffff"
+        stroke-width="0.45"
+    />
+</svg>
